@@ -15,8 +15,6 @@
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:image" content="https://utilitea.github.io/som/radio.png">
 
-<link rel="manifest" href="manifest.json">
-
     <!-- Ícone para atalhos no celular/desktop -->
     <link rel="apple-touch-icon" href="https://utilitea.github.io/som/radio.png">
     <meta name="msapplication-TileImage" content="https://utilitea.github.io/som/radio.png">
@@ -338,47 +336,6 @@
             audioPlayer.volume = value;
         }
 
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('/sw.js')
-        .then(() => console.log('Service Worker registrado com sucesso!'))
-        .catch((error) => console.log('Erro ao registrar o Service Worker:', error));
-}
-
-
     </script>
-let deferredPrompt;
-window.addEventListener('beforeinstallprompt', (event) => {
-    event.preventDefault();
-    deferredPrompt = event;
-
-    let installButton = document.createElement('button');
-    installButton.innerText = 'Instalar Rádio';
-    installButton.style.position = 'fixed';
-    installButton.style.bottom = '20px';
-    installButton.style.left = '50%';
-    installButton.style.transform = 'translateX(-50%)';
-    installButton.style.padding = '10px 20px';
-    installButton.style.backgroundColor = '#0084ff';
-    installButton.style.color = 'white';
-    installButton.style.border = 'none';
-    installButton.style.borderRadius = '5px';
-    installButton.style.cursor = 'pointer';
-    
-    installButton.addEventListener('click', () => {
-        deferredPrompt.prompt();
-        deferredPrompt.userChoice.then((choice) => {
-            if (choice.outcome === 'accepted') {
-                console.log('Usuário aceitou a instalação');
-            } else {
-                console.log('Usuário recusou a instalação');
-            }
-            installButton.remove();
-        });
-    });
-
-    document.body.appendChild(installButton);
-});
-
-
 </body>
 </html>
