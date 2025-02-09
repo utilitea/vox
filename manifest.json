@@ -1,0 +1,21 @@
+{
+  "name": "Rádio Online",
+  "short_name": "Rádio",
+  "description": "Ouça rádios ao vivo com facilidade!",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#0084ff",
+  "icons": [
+    {
+      "src": "https://utilitea.github.io/som/radio.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://utilitea.github.io/som/radio.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
