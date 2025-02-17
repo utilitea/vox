@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rádios e Seleções - Estilo Spotify</title>
+    <link rel="icon" href="https://utilitea.github.io/som/radio.png">
+    <style>
+        /* Reset básico */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #121212;
+            color: #b3b3b3;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background-color: #191414;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            color: #1DB954;
+            margin-bottom: 30px;
+        }
+
+        .sidebar .nav-item {
+            margin-bottom: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: #b3b3b3;
+            transition: color 0.3s;
+        }
+
+        .sidebar .nav-item:hover {
+            color: #1DB954;
+        }
+
+        .sidebar .nav-item svg {
+            margin-right: 15px;
+            fill: currentColor;
+            width: 20px;
+            height: 20px;
+        }
+
+        /* Conteúdo Principal */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .main-content h1 {
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        /* Listas de Rádios e Artistas */
+        .section {
+            margin-bottom: 40px;
+        }
+
+        .section h2 {
+            color: #b3b3b3;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .card-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .card {
+            width: 150px;
+            background-color: #282828;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .card img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+
+        .card p {
+            padding: 10px;
+            text-align: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        /* Player */
+        .player {
+            position: fixed;
+            bottom: 0;
+            left: 240px;
+            right: 0;
+            height: 90px;
+            background-color: #181818;
+            display: flex;
+            align-items: center;
+            padding: 0 30px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .player img {
+            width: 60px;
+            height: 60px;
+            border-radius: 4px;
+            margin-right: 20px;
+        }
+
+        .player-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            color: white;
+        }
+
+        .player-controls {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .player-controls button {
+            background: none;
+            border: none;
+            color: #b3b3b3;
+            cursor: pointer;
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+
+        .player-controls button:hover {
+            color: #1DB954;
+        }
+
+        .volume-equalizer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #b3b3b3;
+        }
+
+        .volume-equalizer input[type="range"] {
+            width: 100px;
+        }
+
+        /* Audio Player Hide */
+        audio {
+            display: none;
+        }
+
+        /* Scrollbar Customizada */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #121212;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #1DB954;
+            border-radius: 4px;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .player {
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>SomStream</h2>
+        <div class="nav-item">
+            <!-- Ícone de Início -->
+            <svg viewBox="0 0 24 24"><path d="M3 10v11h11v-4h8v8H3V10z"/></svg>
+            <span>Início</span>
+        </div>
+        <div class="nav-item">
+            <!-- Ícone de Buscar -->
+            <svg viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            <span>Buscar</span>
+        </div>
+        <div class="nav-item">
+            <!-- Ícone de Biblioteca -->
+            <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            <span>Biblioteca</span>
+        </div>
+    </div>
+
+    <!-- Conteúdo Principal -->
+    <div class="main-content">
+        <h1>Rádios e Seleções</h1>
+
+        <!-- Rádios -->
+        <div class="section">
+            <h2>Rádios</h2>
+            <div id="radio-list" class="card-list">
+                <!-- Cartões de Rádio -->
+                <div class="card radio-card" onclick="playRadio('https://ice.fabricahost.com.br/93fmpedroleopoldo', '93', 'http://93fm.radio.br/aovivo/assets_player/logo.png')">
+                    <img src="http://93fm.radio.br/aovivo/assets_player/logo.png" alt="93">
+                    <p>93</p>
+                </div>
+
+                <div class="card radio-card" onclick="playRadio('https://9554.brasilstream.com.br/stream', '98', 'https://www.98live.com.br/images/logo-98.svg')">
+                    <img src="https://www.98live.com.br/images/logo-98.svg" alt="98">
+                    <p>98</p>
+                </div>
+        <div class="card radio-card" onclick="playRadio('https://stm3.srvif.com:8304/;?1739044785612', '107', 'https://tudoradio.com/img/imagecache/90x90_61e9b85ad77f5.png')">
+            <img src="https://tudoradio.com/img/imagecache/90x90_61e9b85ad77f5.png" alt="107">
+            <p>107</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('https://24223.live.streamtheworld.com/RADIO_ALVORADAAAC.aac', 'Alvorada', 'https://cdn-profiles.tunein.com/s10496/images/logoq.png')">
+            <img src="https://cdn-profiles.tunein.com/s10496/images/logoq.png" alt="Alvorada">
+            <p>Alvorada</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('https://antenaone.crossradio.com.br/stream/1;', 'Antena 1', 'https://img.radios.com.br/radio/xl/radio9505_1574106966.jpg')">
+            <img src="https://img.radios.com.br/radio/xl/radio9505_1574106966.jpg" alt="Antena 1">
+            <p>Antena 1</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('https://radios.cabreuvoip.com.br:8018/;stream.mp3', 'Atividade', 'https://www.cxradio.com.br/img/Radio/Logo/fbd7e21a09dd17c8ad10432d7261a0b8.jpg')">
+            <img src="https://www.cxradio.com.br/img/Radio/Logo/fbd7e21a09dd17c8ad10432d7261a0b8.jpg" alt="Atividade">
+            <p>Atividade</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('https://27343.live.streamtheworld.com/BHFMAAC.aac', 'BHFM', 'https://static.mytuner.mobi/media/tvos_radios/270/radio-bh-fm.8e19aa97.png')">
+            <img src="https://static.mytuner.mobi/media/tvos_radios/270/radio-bh-fm.8e19aa97.png" alt="BHFM">
+            <p>BHFM</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('https://streaming.fox.srv.br:8104/stream', 'Canção Nova', 'https://img.radios.com.br/radio/xl/radio11126_1445520919.jpg')">
+            <img src="https://img.radios.com.br/radio/xl/radio11126_1445520919.jpg" alt="Canção Nova">
+            <p>Canção Nova</p>
+        </div>
+
+
+
+                <!-- Adicione aqui os demais cartões de rádio conforme seu código original -->
+
+                <!-- Exemplo de mais rádios -->
+        <div class="card radio-card" onclick="playRadio('https://8337.brasilstream.com.br/stream', 'Gospa Mira', 'https://painel.brasilstream.com.br/uploads/logo/1642947935.png')">
+            <img src="https://painel.brasilstream.com.br/uploads/logo/1642947935.png" alt="Gospa Mira">
+            <p>Gospa Mira</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('https://ssl.zoeweb.net/proxy/inconfidencia?mp=/stream', 'Inconfidência', 'https://tudoradio.com/img/imagecache/90x90_radio_inconfidenciafm.png')">
+            <img src="https://tudoradio.com/img/imagecache/90x90_radio_inconfidenciafm.png" alt="Inconfidência">
+            <p>Inconfidência</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('https://8903.brasilstream.com.br/stream', 'Itatiaia', 'https://img.radios.com.br/radio/lg/radio14_1646746883.jpeg')">
+            <img src="https://img.radios.com.br/radio/lg/radio14_1646746883.jpeg" alt="Itatiaia">
+            <p>Itatiaia</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('https://8335.brasilstream.com.br/stream', 'Liberdade', 'https://tudoradio.com/img/uploads/radios/radio_liberdadefm929belohorizonte.png')">
+            <img src="https://tudoradio.com/img/uploads/radios/radio_liberdadefm929belohorizonte.png" alt="Liberdade">
+            <p>Liberdade</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('https://8231.brasilstream.com.br/stream', 'Light', 'https://tudoradio.com/img/uploads/radios/630fff869cafb.png')">
+            <img src="https://tudoradio.com/img/uploads/radios/630fff869cafb.png" alt="Light">
+            <p>Light</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('https://26653.live.streamtheworld.com/MIXFM_BH.mp3', 'Mix', 'https://tudoradio.com/img/uploads/radios/631fe0b3505d5.png')">
+            <img src="https://tudoradio.com/img/uploads/radios/631fe0b3505d5.png" alt="Mix">
+            <p>Mix</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('http://wz3.dnip.com.br/plfm/plfm.stream/chunklist.m3u8', 'PLFM', 'https://www.cxradio.com.br/img/Radio/Logo/d33397416da37ace8c41b8ec73d7cb7a.jpg')">
+            <img src="https://www.cxradio.com.br/img/Radio/Logo/d33397416da37ace8c41b8ec73d7cb7a.jpg" alt="PLFM">
+            <p>PLFM</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('https://servidor32-2.brlogic.com:8200/live', 'Super', 'https://img.radios.com.br/radio/xl/radio18490_1637166379.png')">
+            <img src="https://img.radios.com.br/radio/xl/radio18490_1637166379.png" alt="Super">
+            <p>Super</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('https://26573.live.streamtheworld.com/RT_BH.mp3', 'Transamérica', 'https://tudoradio.com/img/uploads/radios/672124307456a.png')">
+            <img src="https://tudoradio.com/img/uploads/radios/672124307456a.png" alt="Transamérica">
+            <p>Transamérica</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('https://srv1.braudio.com.br/7008', 'Só MPB', 'https://static.mytuner.mobi/media/tvos_radios/649/radio-so-mpb.d8a5895d.png')">
+            <img src="https://static.mytuner.mobi/media/tvos_radios/649/radio-so-mpb.d8a5895d.png" alt="Só MPB">
+            <p>Só MPB</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('https://cast2.youngtech.radio.br:8160/radio', 'Pop & Rock', 'https://static.mytuner.mobi/media/tvos_radios/010/radio-pop-rock-fm.eb38cc8d.png')">
+            <img src="https://static.mytuner.mobi/media/tvos_radios/010/radio-pop-rock-fm.eb38cc8d.png" alt="Pop & Rock">
+            <p>Pop & Rock</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('http://holidaygym.emitironline.com:9040/stream', 'Zen', 'https://static.mytuner.mobi/media/tvos_radios/x54mmudfwaka.png')">
+            <img src="https://static.mytuner.mobi/media/tvos_radios/x54mmudfwaka.png" alt="Zen">
+            <p>Zen</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('https://stream.zeno.fm/ocwewvvaftzvv?1739387489628', '80s Nacional', 'https://img.radios.com.br/radio/lg/radio38673_1487790043.jpg')">
+            <img src="https://img.radios.com.br/radio/lg/radio38673_1487790043.jpg" alt="80s Nacional">
+            <p>80s</p>
+        </div>
+
+        <div class="card radio-card" onclick="playRadio('https://server18.srvsh.com.br:8428/stream?1739387740902', '80s Disco', 'https://img.radios.com.br/radio/lg/radio179373_1706528105.png')">
+            <img src="https://img.radios.com.br/radio/lg/radio179373_1706528105.png" alt="80s Disco">
+            <p>80s</p>
+        </div>
+        
+        <div class="card radio-card" onclick="playRadio('https://90.streeemer.com:8000/radio.aac', '90s', 'https://static.mytuner.mobi/media/tvos_radios/672/love-90s-portugal.6f1135d3.png')">
+            <img src="https://static.mytuner.mobi/media/tvos_radios/672/love-90s-portugal.6f1135d3.png" alt="90s">
+            <p>90s</p>
+        </div>
+
+    </div>
+                <!-- Continue adicionando os cartões de rádios restantes -->
+            </div>
+        </div>
+
+        <!-- Artistas -->
+        <div class="section">
+            <h2>Artistas</h2>
+            <div id="artist-list" class="card-list">
+                <!-- Cartões de Artista -->
+                <div class="card artist-card" onclick="playArtist('Enya', 'https://album1.cdn107.com/b5/fe/b5fe4b1fb3f79463080f1a2e06de8e3b_xl.jpg')">
+                    <img src="https://album1.cdn107.com/b5/fe/b5fe4b1fb3f79463080f1a2e06de8e3b_xl.jpg" alt="Enya">
+                    <p>Enya</p>
+                </div>
+
+                <div class="card artist-card" onclick="playArtist('Era', 'https://album99.cdn107.com/4f/7b/4f7b2966f213e619b3cf268972004a03_xl.jpg')">
+                    <img src="https://album99.cdn107.com/4f/7b/4f7b2966f213e619b3cf268972004a03_xl.jpg" alt="Era">
+                    <p>Era</p>
+                </div>
+
+                <!-- Adicione aqui os demais cartões de artista conforme seu código original -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Fixado -->
+    <div class="player">
+        <img id="player-image" src="https://utilitea.github.io/som/radio.png" alt="Capa">
+        <div class="player-info">
+            <span id="player-title">Nenhuma Música Tocando</span>
+            <span id="player-artist"></span>
+        </div>
+        <div class="player-controls">
+            <button onclick="playPrevious()">⏮️</button>
+            <button id="play-button" onclick="togglePlay()">▶️</button>
+            <button onclick="playNext()">⏭️</button>
+            <button onclick="toggleLoop()">🔁</button>
+            <div class="volume-equalizer">
+                <input type="range" id="volume" min="0" max="1" step="0.1" onchange="setVolume(this.value)" value="0.5">
+                <div class="wave">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
+            </div>
+        </div>
+        <!-- Elemento de Áudio -->
+        <audio id="audio-player"></audio>
+    </div>
+
+    <!-- Script -->
+    <script>
+        const audioPlayer = document.getElementById("audio-player");
+        const barsContainer = document.querySelector(".wave");
+        const playerImage = document.getElementById("player-image");
+        const playerTitle = document.getElementById("player-title");
+        const playerArtist = document.getElementById("player-artist");
+        const playButton = document.getElementById("play-button");
+        let isPlaying = false;
+        let currentTrackIndex = 0;
+        let currentTracks = [];
+        let isLooping = false;
+
+        const playlists = {
+            Enya: [
+                { "title": "01.64 I Want Tomorrow", "url": "https://mp3-128.jango.com/music/05/20/07/0520072108.mp3" },
+                { "title": "02.64 March of the Celts", "url": "https://mp3-128.jango.com/music/08/04/57/0804572890.mp3" },
+                { "title": "03.64 Fairytale", "url": "https://mp3-128.jango.com/music/03/12/62/0312627020.mp3" },
+                { "title": "04.64 Triad St. Patrick Cú Chulainn Oisin", "url": "https://mp3-128.jango.com/music/01/83/86/0183861221.mp3" },
+                { "title": "05.64 Portrait (Out of the Blue)", "url": "https://mp3-128.jango.com/music/00/23/23/0023238446.mp3" },
+                { "title": "06.64 Boadicea", "url": "https://m4a-64.jango.com/17/70/58/1770582298471357748.m4a" },
+                { "title": "07.64 Watermark", "url": "https://m4a-64.jango.com/41/47/74/4147740902272012987.m4a" },
+                { "title": "08.64 Cursum Perficio", "url": "https://mp3-128.jango.com/music/04/92/23/0492231527.mp3" },
+                { "title": "09.64 On Your Shore", "url": "https://mp3-128.jango.com/music/04/87/36/0487366014.mp3" },
+                { "title": "10.64 Storms in Africa", "url": "https://m4a-64.jango.com/25/36/77/2536771226851486384.m4a" },
+                { "title": "11.64 Exile", "url": "https://m4a-64.jango.com/17/48/18/174818287533599606.m4a" },
+                { "title": "12.64 Orinoco Flow", "url": "https://m4a-64.jango.com/62/68/51/626851622003071289.m4a" },
+                { "title": "13.64 Evening Falls", "url": "https://m4a-64.jango.com/34/91/91/3491910010791578203.m4a" },
+                { "title": "14.64 River", "url": "https://mp3-128.jango.com/music/07/88/32/0788320179.mp3" },
+                { "title": "15.64 The Longships", "url": "https://mp3-128.jango.com/music/04/44/29/0444295676.mp3" },
+                { "title": "16.64 Shepherd Moons", "url": "https://m4a-64.jango.com/12/11/93/1211930281.m4a" },
+                { "title": "17.64 Caribbean Blue", "url": "https://m4a-64.jango.com/05/30/86/0530865221.m4a" },
+                { "title": "18.64 Ebudæ", "url": "https://m4a-64.jango.com/39/28/50/3928507631726450107.m4a" },
+                { "title": "19.64 Angeles", "url": "https://m4a-64.jango.com/19/50/09/1950095749.m4a" },
+                { "title": "20.64 No Holly for Miss Quinn", "url": "https://m4a-64.jango.com/08/02/34/0802347357.m4a" },
+                { "title": "21.64 Book of Days", "url": "https://m4a-64.jango.com/14/90/57/1490579285762343922.m4a" },
+                { "title": "22.64 Evacuee", "url": "https://m4a-64.jango.com/07/89/85/0789856128.m4a" },
+                { "title": "23.64 Lothlorien", "url": "https://m4a-64.jango.com/04/72/58/0472587582.m4a" },
+                { "title": "24.64 Marble Halls", "url": "https://m4a-64.jango.com/17/51/08/1751082508.m4a" },
+                { "title": "25.64 Afer Ventus", "url": "https://m4a-64.jango.com/05/09/15/0509152837.m4a" },
+                { "title": "26.64 Smaointe", "url": "https://m4a-64.jango.com/26/64/56/2664560518326216339.m4a" },
+                { "title": "27.64 A Day Without Rain", "url": "https://m4a-64.jango.com/43/16/32/4316321668147821252.m4a" },
+                { "title": "28.64 Wild Child", "url": "https://m4a-64.jango.com/31/59/73/3159736114561251639.m4a" },
+                { "title": "29.64 Only Time", "url": "https://m4a-64.jango.com/21/26/73/2126735501771635007.m4a" },
+                { "title": "30.64 Tempus Vernum", "url": "https://mp3-128.jango.com/music/03/70/27/0370278836.mp3" },
+                { "title": "31.64 Flora's Secret", "url": "https://mp3-128.jango.com/music/09/00/56/0900560899.mp3" },
+                { "title": "32.64 Fallen Embers", "url": "https://mp3-128.jango.com/music/15/11/89/1511898435.mp3" },
+                { "title": "33.64 Silver Inches", "url": "https://mp3-128.jango.com/music/17/78/28/1778287501.mp3" },
+                { "title": "34.64 Pilgrim", "url": "https://mp3-128.jango.com/music/16/19/78/1619783871.mp3" },
+                { "title": "35.64 One by One", "url": "https://mp3-128.jango.com/music/10/09/93/1009933249.mp3" },
+                { "title": "36.64 Lazy Days", "url": "https://mp3-128.jango.com/music/21/46/22/2146226226.mp3" },
+                { "title": "37.64 Less Than a Pearl", "url": "https://m4a-64.jango.com/06/76/43/0676436084.m4a" },
+                { "title": "38.64 Amarantine", "url": "https://m4a-64.jango.com/08/33/14/0833140462.m4a" },
+                { "title": "39.64 It's in the Rain", "url": "https://m4a-64.jango.com/08/18/03/0818034667.m4a" },  
+                { "title": "40.64 If I Could Be Where You Are", "url": "https://m4a-64.jango.com/32/38/94/3238948882.m4a" },
+                { "title": "41.64 The River Sings", "url": "https://m4a-64.jango.com/46/02/92/4602928525.m4a" },
+                { "title": "42.64 Long Long Journey", "url": "https://m4a-64.jango.com/45/26/64/4526648832.m4a" },
+                { "title": "43.64 Sumiregusa", "url": "https://m4a-64.jango.com/25/97/77/2597770317.m4a" },
+                { "title": "44.64 Someone Said Goodbye", "url": "https://m4a-64.jango.com/36/99/38/3699381014.m4a" },
+                { "title": "45.64 A Moment Lost", "url": "https://m4a-64.jango.com/08/82/26/0882262439.m4a" },
+                { "title": "46.64 Drifting", "url": "https://m4a-64.jango.com/27/17/01/2717010198.m4a" },
+                { "title": "47.64 Amid the Falling Snow", "url": "https://m4a-64.jango.com/32/11/39/3211394898.m4a" },
+                { "title": "48.64 Water Shows the Hidden Heart", "url": "https://m4a-64.jango.com/28/01/30/2801306974.m4a" },
+                { "title": "49.64 My! My! Time Flies!", "url": "https://mp3-128.jango.com/music/36/95/91/3695912351.mp3" },
+                { "title": "50.64 The Comb Of The Winds", "url": "https://m4a-64.jango.com/38/47/60/384760195773536521.m4a" },
+                { "title": "51.64 Journey Of The Angels", "url": "https://m4a-64.jango.com/03/61/36/0361360326.m4a" },
+                { "title": "52.64 White Is In The Winter Night", "url": "https://m4a-64.jango.com/02/40/26/0240262713.m4a" },
+                { "title": "53.64 Trains And Winter Rains", "url": "https://m4a-64.jango.com/07/95/62/0795626260.m4a" },
+                { "title": "54.64 One Toy Soldier", "url": "https://m4a-64.jango.com/07/65/82/0765822510.m4a" },
+                { "title": "55.64 The Memory of Trees", "url": "https://mp3-128.jango.com/music/02/87/32/0287325259.mp3" },
+                { "title": "56.64 Anywhere Is", "url": "https://m4a-64.jango.com/25/02/34/2502340159256350054.m4a" },
+                { "title": "57.64 Pax Deorum", "url": "https://m4a-64.jango.com/25/82/27/2582278555889297558.m4a" },
+                { "title": "58.64 Athair Ar Neamh", "url": "https://m4a-64.jango.com/23/21/08/2321089019088400181.m4a" },
+                { "title": "59.64 China Roses", "url": "https://m4a-64.jango.com/19/94/54/1994545199333651727.m4a" },
+                { "title": "60.64 Hope Has a Place", "url": "https://m4a-64.jango.com/32/58/96/3258964770194102160.m4a" },
+                { "title": "61.64 La Sonadora", "url": "https://m4a-64.jango.com/14/86/14/1486145169563100851.m4a" },
+                { "title": "62.64 Paint The Sky With Stars", "artist": "Enya", "url": "https://mp3-128.jango.com/music/04/87/59/0487593440.mp3" },
+                { "title": "63.64 Only If", "url": "https://mp3-128.jango.com/music/01/70/21/0170212337.mp3" },
+                { "title": "64.64 Aníron Theme Of Aragorn & Arwen",  "url": "https://mp3-128.jango.com/music/09/79/59/0979597121.mp3" },
+            ],
+            Era: [
+                { "title": "Hino", "url": "https://mp3-128.jango.com/music/10/54/94/1054945929.mp3" },
+                { "title": "Frase", "url": "https://mp3-128.jango.com/music/06/05/56/0605561827.mp3" },
+            ],
+            // Adicione outros artistas e playlists conforme necessário
+        };
+
+        function playRadio(url, name, img) {
+            stopAudio();
+            audioPlayer.src = url;
+            audioPlayer.play();
+            isPlaying = true;
+            barsContainer.classList.add("playing");
+            playButton.innerText = "⏸️";
+
+            playerImage.src = img;
+            playerTitle.innerText = name;
+            playerArtist.innerText = "Rádio";
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function playArtist(artist, img) {
+            stopAudio();
+            currentTracks = playlists[artist];
+            currentTrackIndex = 0;
+
+            if (currentTracks && currentTracks.length > 0) {
+                playTrack(currentTracks, currentTrackIndex);
+                playerImage.src = img;
+                playerArtist.innerText = artist;
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+        }
+
+        function playTrack(tracks, index) {
+            if (index >= tracks.length) {
+                if (isLooping) {
+                    index = 0;
+                } else {
+                    stopAudio();
+                    return;
+                }
+            }
+            audioPlayer.src = tracks[index].url;
+            audioPlayer.play();
+            isPlaying = true;
+            barsContainer.classList.add("playing");
+            playButton.innerText = "⏸️";
+
+            playerTitle.innerText = tracks[index].title;
+            playerArtist.innerText = currentTracks.artist || "Artista";
+
+            audioPlayer.onended = function() {
+                playTrack(tracks, index + 1);
+            };
+        }
+
+        function togglePlay() {
+            if (isPlaying) {
+                audioPlayer.pause();
+                isPlaying = false;
+                barsContainer.classList.remove("playing");
+                playButton.innerText = "▶️";
+            } else {
+                audioPlayer.play();
+                isPlaying = true;
+                barsContainer.classList.add("playing");
+                playButton.innerText = "⏸️";
+            }
+        }
+
+        function stopAudio() {
+            audioPlayer.pause();
+            audioPlayer.currentTime = 0;
+            isPlaying = false;
+            barsContainer.classList.remove("playing");
+            playButton.innerText = "▶️";
+            playerTitle.innerText = "Nenhuma Música Tocando";
+            playerArtist.innerText = "";
+        }
+
+        function setVolume(value) {
+            audioPlayer.volume = value;
+        }
+
+        function playNext() {
+            if (currentTracks.length > 0) {
+                currentTrackIndex++;
+                playTrack(currentTracks, currentTrackIndex);
+            }
+        }
+
+        function playPrevious() {
+            if (currentTracks.length > 0) {
+                currentTrackIndex--;
+                if (currentTrackIndex < 0) {
+                    currentTrackIndex = currentTracks.length - 1;
+                }
+                playTrack(currentTracks, currentTrackIndex);
+            }
+        }
+
+        function toggleLoop() {
+            isLooping = !isLooping;
+            alert(`Looping ${isLooping ? 'ativado' : 'desativado'}`);
+        }
+
+        // Animação do Equalizador
+        setInterval(() => {
+            const bars = document.querySelectorAll('.bar');
+            bars.forEach(bar => {
+                bar.style.height = `${Math.random() * 20 + 5}px`;
+                bar.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            });
+        }, 500);
+    </script>
+</body>
+</html>
