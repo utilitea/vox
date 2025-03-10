@@ -211,12 +211,12 @@
     </div>
 
     <div id="radio-list">
-        <div class="card radio-card" onclick="playRadio('https://ice.fabricahost.com.br/93fmpedroleopoldo', '93', 'http://93fm.radio.br/aovivo/assets_player/logo.png')">
+        <div class="card radio-card" onclick="playRadio('https://ice.fabricahost.com.br/93fmpedroleopoldo', '93', 'https://tudoradio.com/img/uploads/radios/630e1265d0536.png')">
             <img src="http://93fm.radio.br/aovivo/assets_player/logo.png" alt="93">
             <p>93</p>
         </div>
 
-        <div class="card radio-card" onclick="playRadio('https://9554.brasilstream.com.br/stream', '98', 'https://www.98live.com.br/images/logo-98.svg')">
+        <div class="card radio-card" onclick="playRadio('https://9554.brasilstream.com.br/stream', '98', 'https://rede98.com.br/wp-content/uploads/2024/10/98-logo.png')">
             <img src="https://www.98live.com.br/images/logo-98.svg" alt="98">
             <p>98</p>
         </div>
@@ -338,6 +338,20 @@
             <img src="https://album99.cdn107.com/4f/7b/4f7b2966f213e619b3cf268972004a03_xl.jpg" alt="Era">
             <p>Era</p>
         </div>
+
+        <div id="artist-list">
+        <div class="card artist-card" onclick="playArtist('Enigma', 'https://album99.cdn107.com/8d/52/8d52551804ef8875c75e7b893e56330e_xl.jpg')">
+            <img src="https://album99.cdn107.com/8d/52/8d52551804ef8875c75e7b893e56330e_xl.jpg" alt="Enigma">
+            <p>Enigma</p>
+        </div>
+
+        <div id="artist-list">
+        <div class="card artist-card" onclick="playArtist('Secret Garden', 'https://album1.cdn107.com/35/f5/35f5a431e6e08446df71213d78fbf262_xl.jpg')">
+            <img src="https://album1.cdn107.com/35/f5/35f5a431e6e08446df71213d78fbf262_xl.jpg" alt="Secret Garden">
+            <p>Secret Garden</p>
+        </div>
+
+            
     </div>
 
     <audio id="audio-player"></audio>
@@ -425,9 +439,42 @@
                 { "title": "64.64 Aníron Theme Of Aragorn & Arwen",  "artist": "Enya",  "url": "https://mp3-128.jango.com/music/09/79/59/0979597121.mp3" },
             ],
             Era: [
-                { "title": "Hino", "url": "https://mp3-128.jango.com/music/10/54/94/1054945929.mp3" },
-                { "title": "Frase", "url": "https://mp3-128.jango.com/music/06/05/56/0605561827.mp3" },
+                { "title": "01.17 Hino", "artist": "Era", "url": "https://mp3-128.jango.com/music/10/54/94/1054945929.mp3" },
+                { "title": "02.17 Frase", "Era", "url": "https://mp3-128.jango.com/music/06/05/56/0605561827.mp3" },
+                { "title": "03.17 Sentence", "Era", "url": "https://mp3-128.jango.com/music/06/05/56/0605561827.mp3" },
+                { "title": "04.17 The Mass", "Era", "url": "https://m4a-64.jango.com/37/48/68/374868932448322724.m4a" },
+                { "title": "05.17 Don't Go Away", "Era", "url": "https://mp3-128.jango.com/music/02/10/64/0210642648.mp3" },
+                { "title": "06.17 Prayers", "Era", "url": "https://mp3-128.jango.com/music/10/20/49/1020494106.mp3" },
+                { "title": "07.17 Epona", "Era", "url": "https://mp3-128.jango.com/music/08/27/00/0827006931.mp3" },
+                { "title": "08.17 Don't U", "Era", "url": "https://mp3-128.jango.com/music/06/38/81/0638813638.mp3" },
+                { "title": "09.17 Thousand Words", "Era", "url": "https://mp3-128.jango.com/music/09/31/04/0931048092.mp3" },
+                { "title": "10.17 Divano", "Era", "url": "https://mp3-128.jango.com/music/05/65/36/0565360562.mp3" },
+                { "title": "11.17 Looking For Something", "Era", "url": "https://mp3-128.jango.com/music/09/74/54/0974547952.mp3" },
+                { "title": "12.17 Enae Volare", "Era", "url": "https://mp3-128.jango.com/music/01/55/24/0155241060.mp3" },
+                { "title": "13.17 Cathar Rhythm", "Era", "url": "https://mp3-128.jango.com/music/09/43/68/0943689102.mp3" },
+                { "title": "14.17 Come Into My World", "Era", "url": "https://mp3-128.jango.com/music/06/15/65/0615659364.mp3" },
+                { "title": "15.17 Mother (Remix)", "Era", "url": "https://mp3-128.jango.com/music/00/33/78/0033789117.mp3" },
+                { "title": "16.17 Hymne", "Era", "url": "https://mp3-128.jango.com/music/10/54/94/1054945929.mp3" },
+                { "title": "17.17 Misere Mani", "Era", "url": "https://mp3-128.jango.com/music/08/30/83/0830830102.mp3" },
             ],
+            Enigma: [
+                 { "title": "01.03 Return to Innocence", "Enigma", "url": "https://m4a-64.jango.com/20/25/32/2025329445081126901.m4a" },
+                 { "title": "02.03 Gravity of Love", "Enigma", "url": "https://mp3-128.jango.com/music/02/32/83/0232833189.mp3" },
+                 { "title": "03.03 Silent Warrior", "Enigma", "url": "https://mp3-128.jango.com/music/10/25/05/1025052160.mp3" },
+            ],
+            Secret Garden: [
+                 { "title": "01.10 Elan",  "artist": "Secret Garden",  "url": "https://m4a-64.jango.com/09/28/19/0928199575.m4a" },
+                 { "title": "02.10 Nocturne",  "artist": "Secret Garden", "url": "https://mp3-128.jango.com/music/04/92/65/0492656585.mp3" },
+                 { "title": "03.10 Sigma",  "artist": "Secret Garden", "url": "https://mp3-128.jango.com/music/08/90/49/0890495627.mp3" },
+                 { "title": "04.10 From A Secret Garden",  "artist": "Secret Garden", "url": "https://m4a-64.jango.com/22/10/06/2210064135617701292.m4a" },
+                 { "title": "05.10 Adagio",  "artist": "Secret Garden", "url": "https://mp3-128.jango.com/music/07/56/11/0756115680.mp3" },
+                 { "title": "06.10 Elan",  "artist": "Secret Garden", "url": "https://m4a-64.jango.com/09/28/19/0928199575.m4a" },
+                 { "title": "07.10 Celebration",  "artist": "Secret Garden", "url": "https://mp3-128.jango.com/music/03/68/75/0368753541.mp3" },
+                 { "title": "08.10 Sona",  "artist": "Secret Garden", "url": "https://m4a-64.jango.com/25/50/08/2550083934556081296.m4a" },
+                 { "title": "09.10 Sometimes When It Rains",  "artist": "Secret Garden", "url": "https://m4a-64.jango.com/02/26/68/0226689738.m4a" },
+                 { "title": "10.10 Sleepsong",  "artist": "Secret Garden", "url": "https://m4a-64.jango.com/01/19/38/0119384968.m4a" },
+                ],
+              
         };
 
         function playRadio(url, name, img) {
