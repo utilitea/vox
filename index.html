@@ -476,6 +476,7 @@
         };
 
         function playRadio(url, name, img) {
+            console.log("Reproduzindo rádio:", name);
             stopAudio();
             audioPlayer.src = url;
             audioPlayer.play();
@@ -527,6 +528,7 @@
             currentSongDisplay.innerText = tracks[index].title; // Atualiza o nome da música
 
             audioPlayer.onended = function() {
+                console.log("Música terminou, tentando tocar a próxima");
                 currentSongDisplay.innerText = ''; // Limpa o nome da música ao final
                 playTrack(tracks, index + 1);
             };
