@@ -7,23 +7,24 @@
   <link rel="icon" href="https://utilitea.github.io/som/radio.png">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
   <style>
-    /* Variáveis e estilos básicos */
     :root {
       --primary-color: #007BFF;
       --secondary-color: #673AB7;
       --background-color: #121212;
       --surface-color: #1E1E1E;
-      --text-color: #FFFFFF; /* Cor do texto */
+      --text-color: #FFFFFF;
       --text-secondary-color: #B0B0B0;
       --accent-color: #03DAC6;
     }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
       font-family: 'Roboto', sans-serif;
-      color: var(--text-color); /* Define a cor do texto para todos os elementos */
+      color: var(--text-color);
     }
+
     body {
       background-color: var(--background-color);
       display: flex;
@@ -32,15 +33,32 @@
       padding: 20px;
       min-height: 100vh;
     }
+
     header {
       width: 100%;
       text-align: center;
       margin-bottom: 30px;
     }
+
     header h1 {
       font-size: 2.5em;
-      /* Removida a cor azul do título */
     }
+
+    .search-container {
+      width: 100%;
+      max-width: 600px;
+      margin-bottom: 20px;
+    }
+
+    .search-container input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid var(--text-secondary-color);
+      background-color: var(--surface-color);
+      color: var(--text-color);
+    }
+
     .player-container {
       background-color: var(--surface-color);
       border-radius: 15px;
@@ -53,6 +71,7 @@
       flex-direction: column;
       align-items: center;
     }
+
     .current-playing {
       display: flex;
       flex-direction: column;
@@ -60,6 +79,7 @@
       margin-bottom: 20px;
       width: 100%;
     }
+
     .current-playing img {
       width: 80px;
       height: 80px;
@@ -68,16 +88,61 @@
       margin-bottom: 10px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     }
+
     .current-playing-info {
       text-align: center;
     }
+
     .current-playing-info h2 {
       font-size: 1.5em;
       margin-bottom: 5px;
     }
+
     .current-playing-info p {
       font-size: 1em;
     }
+
+    .progress-bar {
+      width: 100%;
+      max-width: 400px;
+      margin-top: 10px;
+    }
+
+    .progress-bar input[type="range"] {
+      width: 100%;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 5px;
+      background: var(--text-secondary-color);
+      border-radius: 5px;
+      outline: none;
+      opacity: 0.7;
+      transition: opacity .2s;
+      cursor: pointer;
+    }
+
+    .progress-bar input[type="range"]:hover {
+      opacity: 1;
+    }
+
+    .progress-bar input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
+    .progress-bar input[type="range"]::-moz-range-thumb {
+      width: 15px;
+      height: 15px;
+      background: var(--primary-color);
+      border-radius: 50%;
+      cursor: pointer;
+    }
+
     .player-controls {
       display: flex;
       align-items: center;
@@ -85,6 +150,7 @@
       width: 100%;
       margin-bottom: 15px;
     }
+
     .player-controls button {
       background: none;
       border: none;
@@ -95,18 +161,22 @@
       justify-content: center;
       transition: transform 0.2s ease-in-out;
     }
+
     .player-controls button svg {
       width: 24px;
       height: 24px;
       fill: var(--text-color);
     }
+
     .player-controls button:hover {
       transform: scale(1.1);
     }
+
     .player-controls button:disabled svg {
       fill: var(--text-secondary-color);
       cursor: not-allowed;
     }
+
     .volume-control {
       display: flex;
       align-items: center;
@@ -115,6 +185,14 @@
       max-width: 200px;
       margin-bottom: 15px;
     }
+
+    .volume-control svg {
+      width: 24px;
+      height: 24px;
+      fill: var(--text-color);
+      margin-right: 10px;
+    }
+
     .volume-control input[type="range"] {
       flex-grow: 1;
       -webkit-appearance: none;
@@ -128,9 +206,11 @@
       transition: opacity .2s;
       cursor: pointer;
     }
+
     .volume-control input[type="range"]:hover {
       opacity: 1;
     }
+
     .volume-control input[type="range"]::-webkit-slider-thumb {
       -webkit-appearance: none;
       appearance: none;
@@ -140,6 +220,7 @@
       border-radius: 50%;
       cursor: pointer;
     }
+
     .volume-control input[type="range"]::-moz-range-thumb {
       width: 15px;
       height: 15px;
@@ -147,6 +228,7 @@
       border-radius: 50%;
       cursor: pointer;
     }
+
     .wave {
       display: flex;
       gap: 4px;
@@ -154,12 +236,14 @@
       align-items: flex-end;
       margin-left: 15px;
     }
+
     .bar {
       width: 4px;
       background: var(--primary-color);
       height: 5px;
       animation: none;
     }
+
     @keyframes equalizer {
       0% { height: 5px; background: var(--primary-color); }
       25% { height: 25px; background: var(--accent-color); }
@@ -167,6 +251,7 @@
       75% { height: 20px; background: #FFC107; }
       100% { height: 5px; background: var(--primary-color); }
     }
+
     .playing .bar:nth-child(1) { animation: equalizer 0.8s infinite alternate ease-in-out; }
     .playing .bar:nth-child(2) { animation: equalizer 0.6s infinite alternate ease-in-out; }
     .playing .bar:nth-child(3) { animation: equalizer 1s infinite alternate ease-in-out; }
@@ -178,13 +263,14 @@
       max-width: 800px;
       margin-bottom: 30px;
     }
+
     .media-list h2 {
       font-size: 1.8em;
       margin-bottom: 15px;
       border-bottom: 2px solid var(--primary-color);
       padding-bottom: 5px;
     }
-    /* Layout horizontal com rolagem */
+
     .card-container {
       display: flex;
       overflow-x: auto;
@@ -192,10 +278,11 @@
       padding-bottom: 10px;
       -webkit-overflow-scrolling: touch;
     }
-    /* Limita a altura para 2 linha de cards */
+
     .media-list {
-      max-height: 420px; /* Ajuste conforme necessário */
+      max-height: 420px;
     }
+
     .card {
       background-color: var(--surface-color);
       border-radius: 10px;
@@ -204,48 +291,53 @@
       transition: transform 0.3s ease, box-shadow 0.3s ease;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
       flex: 0 0 auto;
-      width: 150px; /* Padrão para telas maiores */
+      width: 150px;
     }
+
     .card:hover {
       transform: translateY(-5px);
       box-shadow: 0 6px 12px rgba(0, 123, 255, 0.4);
     }
+
     .card img {
       width: 100%;
-      /* Mantém o formato quadrado sem distorções */
       aspect-ratio: 1/1;
       object-fit: cover;
     }
+
     .card-info {
       padding: 15px;
       text-align: center;
     }
+
     .card-info p {
       font-weight: 500;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     audio {
       display: none;
     }
+
     .artist-controls {
       display: flex;
       align-items: center;
     }
+
     .artist-controls button {
       margin: 0 5px;
     }
+
     .loop-button.active svg {
       fill: var(--accent-color);
     }
-    /* Estilos responsivos para celulares */
+
     @media (max-width: 768px) {
-      /* Exibe 3 cards por visualização; os demais ficam para rolagem horizontal */
       .card {
         width: calc(33.333% - 14px);
       }
-      /* Ajuste da altura dos containers (se necessário) */
       .media-list {
         max-height: 300px;
       }
@@ -257,12 +349,19 @@
     <h1>Rádios e Seleções</h1>
   </header>
 
+  <div class="search-container">
+    <input type="text" id="search-input" placeholder="Buscar rádio, artista ou música..." oninput="searchMedia()">
+  </div>
+
   <div class="player-container">
     <div class="current-playing">
       <img id="current-media-img" src="https://imgur.com/qFmcbT0.png" alt="Capa da Mídia">
       <div class="current-playing-info">
         <h2 id="current-media-name">Selecione uma rádio ou artista</h2>
         <p id="current-track-name"></p>
+      </div>
+      <div class="progress-bar" id="progress-bar" style="display: none;">
+        <input type="range" id="progress" min="0" max="100" value="0" oninput="setProgress(this.value)">
       </div>
     </div>
     <div class="player-controls">
@@ -295,6 +394,9 @@
       </div>
     </div>
     <div class="volume-control">
+      <svg viewBox="0 0 24 24">
+        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+      </svg>
       <input type="range" id="volume" min="0" max="1" step="0.05" value="1" onchange="setVolume(this.value)">
       <div class="wave">
         <div class="bar"></div>
@@ -323,7 +425,6 @@
   <audio id="audio-player"></audio>
 
   <script>
-    // JavaScript – (As funções abaixo já contêm os ajustes necessários)
     const audioPlayer = document.getElementById("audio-player");
     const playPauseButton = document.getElementById("play-pause-button");
     const stopButton = document.getElementById("stop-button");
@@ -338,12 +439,15 @@
     const radioListContainer = document.getElementById("radio-list");
     const artistListContainer = document.getElementById("artist-list");
     const artistControls = document.getElementById("artist-controls");
+    const progressBar = document.getElementById("progress-bar");
+    const progress = document.getElementById("progress");
+    const searchInput = document.getElementById("search-input");
 
     let isPlaying = false;
     let isLooping = false;
     let currentTrackIndex = 0;
     let currentPlaylist = [];
-    let currentMediaType = null; // 'radio' ou 'artist'
+    let currentMediaType = null;
     let currentMediaInfo = {};
 
     const radios = [
@@ -471,9 +575,7 @@
         } else if (type === 'artist') {
           playArtist(item);
         }
-        // Atualiza o título da página com o nome do conteúdo selecionado
         document.title = `Rádios e Seleções - ${item.name}`;
-        // Envia o usuário para o topo da página
         window.scrollTo(0, 0);
       };
 
@@ -504,8 +606,8 @@
 
     function updatePlayPauseIcon() {
       const iconPath = isPlaying
-        ? "M6 19h4V5H6v14zm8-14v14h4V5h-4z" // Ícone de pause
-        : "M8 5v14l11-7z"; // Ícone de play
+        ? "M6 19h4V5H6v14zm8-14v14h4V5h-4z"
+        : "M8 5v14l11-7z";
       playPauseButton.innerHTML = `<svg viewBox="0 0 24 24"><path d="${iconPath}"/></svg>`;
     }
 
@@ -518,6 +620,7 @@
       currentMediaName.textContent = currentMediaInfo.name || "Selecione uma rádio ou artista";
       currentTrackName.textContent = currentMediaInfo.trackTitle || '';
       artistControls.style.display = currentMediaType === 'artist' ? 'flex' : 'none';
+      progressBar.style.display = currentMediaType === 'artist' ? 'block' : 'none';
       updatePlayPauseIcon();
       updateLoopButton();
       waveContainer.classList.toggle('playing', isPlaying);
@@ -543,7 +646,7 @@
       stopAudio();
       currentMediaType = 'artist';
       currentPlaylist = artist.tracks;
-      currentTrackIndex = 0;
+      currentTrackIndex = artist.searchTrackIndex !== undefined ? artist.searchTrackIndex : 0;
       currentMediaInfo = { name: artist.name, img: artist.img };
       if (currentPlaylist.length > 0) {
         playTrack();
@@ -595,13 +698,26 @@
       isPlaying = false;
       currentMediaInfo.trackTitle = '';
       if (currentMediaType === 'radio') {
-        audioPlayer.src = ''; // Para parar o buffer da rádio
+        audioPlayer.src = '';
       }
       updateUI();
     }
 
     function setVolume(value) {
       audioPlayer.volume = value;
+    }
+
+    function setProgress(value) {
+      const duration = audioPlayer.duration;
+      audioPlayer.currentTime = (value / 100) * duration;
+    }
+
+    function updateProgress() {
+      if (currentMediaType === 'artist') {
+        const currentTime = audioPlayer.currentTime;
+        const duration = audioPlayer.duration;
+        progress.value = (currentTime / duration) * 100;
+      }
     }
 
     function playNext() {
@@ -624,6 +740,64 @@
       updateLoopButton();
     }
 
+    function searchMedia() {
+      const query = searchInput.value.toLowerCase();
+      const results = [];
+      const addedArtists = new Set();
+
+      // Buscar rádios
+      radios.forEach(radio => {
+        if (radio.name.toLowerCase().includes(query)) {
+          results.push(radio);
+        }
+      });
+
+      // Buscar artistas e músicas
+      artists.forEach(artist => {
+        if (addedArtists.has(artist.name)) return;
+
+        let artistAdded = false;
+        const matchingTracks = [];
+
+        // Verificar nome do artista
+        if (artist.name.toLowerCase().includes(query)) {
+          results.push(artist);
+          addedArtists.add(artist.name);
+          artistAdded = true;
+        }
+
+        // Verificar músicas do artista
+        if (!artistAdded) {
+          artist.tracks.forEach((track, trackIndex) => {
+            if (track.title.toLowerCase().includes(query)) {
+              matchingTracks.push(trackIndex);
+            }
+          });
+
+          if (matchingTracks.length > 0) {
+            const artistCopy = { 
+              ...artist, 
+              searchTrackIndex: matchingTracks[0] 
+            };
+            results.push(artistCopy);
+            addedArtists.add(artist.name);
+          }
+        }
+      });
+
+      // Atualizar listas
+      radioListContainer.innerHTML = '';
+      artistListContainer.innerHTML = '';
+
+      results.forEach(media => {
+        if (media.url) {
+          radioListContainer.appendChild(createCard(media, 'radio'));
+        } else {
+          artistListContainer.appendChild(createCard(media, 'artist'));
+        }
+      });
+    }
+
     audioPlayer.onended = () => {
       if (currentMediaType === 'artist') {
         playNext();
@@ -632,6 +806,8 @@
         updateUI();
       }
     };
+
+    audioPlayer.ontimeupdate = updateProgress;
 
     // Inicialização
     loadMediaLists();
