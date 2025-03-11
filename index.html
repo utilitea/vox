@@ -40,15 +40,15 @@
       margin-bottom: 30px;
     }
 
-header h1 {
-  font-size: clamp(1.5rem, 6vw, 2.5rem);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  width: 100%;
-  text-align: center;
-  line-height: 1.2;
-}
+    header h1 {
+      font-size: clamp(1.5rem, 6vw, 2.5rem);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
+      text-align: center;
+      line-height: 1.2;
+    }
 
     .search-container {
       width: 100%;
@@ -263,7 +263,7 @@ header h1 {
     .playing .bar:nth-child(3) { animation: equalizer 1s infinite alternate ease-in-out; }
     .playing .bar:nth-child(4) { animation: equalizer 0.7s infinite alternate ease-in-out; }
     .playing .bar:nth-child(5) { animation: equalizer 0.9s infinite alternate ease-in-out; }
-    
+
     .media-list {
       width: 100%;
       max-width: 800px;
@@ -381,30 +381,23 @@ header h1 {
           <path d="M6 6h12v12H6z"/>
         </svg>
       </button>
-
-<div id="artist-controls" class="artist-controls" style="display: none;">
-  <!-- Botão Anterior -->
-  <button id="prev-button" onclick="playPrevious()">
-    <svg viewBox="0 0 24 24">
-      <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
-    </svg>
-  </button>
-
-  <!-- Botão Próximo -->
-  <button id="next-button" onclick="playNext()">
-    <svg viewBox="0 0 24 24">
-      <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
-    </svg>
-  </button>
-
-  <!-- Botão Loop -->
-  <button id="loop-button" onclick="toggleLoop()" class="loop-button">
-    <svg viewBox="0 0 24 24">
-      <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0020 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 004 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
-    </svg>
-  </button>
-</div>
-
+      <div id="artist-controls" class="artist-controls" style="display: none;">
+        <button id="prev-button" onclick="playPrevious()">
+          <svg viewBox="0 0 24 24">
+            <path d="M15.41 16.59L10.83 12l4.58-4.59L14 6l-6 6 6 6 1.41-1.41z"/>
+          </svg>
+        </button>
+        <button id="next-button" onclick="playNext()">
+          <svg viewBox="0 0 24 24">
+            <path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.41z"/>
+          </svg>
+        </button>
+        <button id="loop-button" onclick="toggleLoop()" class="loop-button">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0020 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 004 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"/>
+          </svg>
+        </button>
+      </div>
     </div>
     <div class="volume-control">
       <svg viewBox="0 0 24 24">
@@ -435,6 +428,13 @@ header h1 {
     </div>
   </div>
 
+  <div class="media-list">
+    <h2>Estrangeiros</h2>
+    <div id="foreign-list" class="card-container">
+      <!-- Os cards serão inseridos via JavaScript -->
+    </div>
+  </div>
+
   <audio id="audio-player"></audio>
 
   <script>
@@ -451,6 +451,7 @@ header h1 {
     const currentTrackName = document.getElementById("current-track-name");
     const radioListContainer = document.getElementById("radio-list");
     const artistListContainer = document.getElementById("artist-list");
+    const foreignListContainer = document.getElementById("foreign-list");
     const artistControls = document.getElementById("artist-controls");
     const progressBar = document.getElementById("progress-bar");
     const progress = document.getElementById("progress");
@@ -475,6 +476,78 @@ header h1 {
     ];
 
     const artists = [
+      { name: 'Ana Carolina', img: 'https://album1.cdn107.com/4e/f8/4ef878977df175cd8c76927e709b79da_xl.jpg?i=1', tracks: [
+          { title: "01.09 Pra Rua Me Levar",  url: "https://mp3-128.jango.com/music/04/35/89/0435892346.mp3" },
+          { title: "02.09 Garganta",  url: "https://mp3-128.jango.com/music/01/00/70/0100706959.mp3" },
+          { title: "03.09 É Isso Aí",  url: "https://m4a-64.jango.com/31/98/78/3198787425926734387.m4a" },
+          { title: "04.09 Confesso",  url: "https://mp3-128.jango.com/music/13/81/35/1381352055.mp3" },
+          { title: "05.09 Beatriz",  url: "https://mp3-128.jango.com/music/05/26/83/0526835211.mp3" },
+          { title: "06.09 O Avesso Dos Ponteiros",  url: "https://mp3-128.jango.com/music/08/88/46/0888464045.mp3" },
+          { title: "07.09 Encostar Na Tua",  url: "https://mp3-128.jango.com/music/18/27/44/1827442762.mp3" },
+          { title: "08.09 Nada Pra Mim",  url: "https://mp3-128.jango.com/music/10/90/24/1090243266.mp3" },
+          { title: "09.09 Nua",  url: "https://mp3-128.jango.com/music/01/27/22/0127220480.mp3" }
+      ]},
+      { name: 'Barão Vermelho', img: 'https://album1.cdn107.com/f5/d9/f5d9e6e6df4c95983de385f44946f1d9_xl.jpg?i=1', tracks: [
+          { title: "01.05 Bete Balanco",  url: "https://mp3-128.jango.com/music/12/12/92/1212920199.mp3" },
+          { title: "02.05 Por Voce",  url: "https://mp3-128.jango.com/music/20/34/44/2034443176.mp3" },
+          { title: "03.05 Meus Bons Amigos",  url: "https://mp3-128.jango.com/music/18/87/37/1887374012.mp3" },
+          { title: "04.05 Puro Extase",  url: "https://mp3-128.jango.com/music/02/61/97/0261976471.mp3" },
+          { title: "05.05 O poeta está vivo",  url: "https://mp3-128.jango.com/music/02/80/52/0280524976.mp3" }
+      ]},
+      { name: 'Capital Inicial', img: 'https://album1.cdn107.com/2b/a9/2ba95566e5aa79e3cb95ba3f91a88abd_xl.jpg?i=1', tracks: [
+          { title: "01.07 Eu Vou Estar",  url: "https://mp3-128.jango.com/music/07/89/83/0789838756.mp3" },
+          { title: "02.07 Natasha",  url: "https://mp3-128.jango.com/music/20/99/83/2099831426.mp3" },
+          { title: "03.07 Fogo",  url: "https://mp3-128.jango.com/music/19/82/07/1982072327.mp3" },
+          { title: "04.07 A Sua Maneira",  url: "https://mp3-128.jango.com/music/03/77/09/0377092644.mp3" },
+          { title: "05.07 Inocente",  url: "https://mp3-128.jango.com/music/11/12/56/1112566856.mp3" },
+          { title: "06.07 Tudo Que Vai",  url: "https://mp3-128.jango.com/music/13/59/30/1359309700.mp3" },
+          { title: "07.07 Independência",  url: "https://mp3-128.jango.com/music/19/61/51/1961516958.mp3" }
+      ]},
+      { name: 'Cássia Eller', img: 'https://album1.cdn107.com/2b/2b/2b2bb1618b1be576fdaa3d7668855c50_xl.jpg?i=1', tracks: [
+          { title: "01.07 Palavras Ao Vento",  url: "https://mp3-128.jango.com/music/05/01/61/0501615971.mp3" },
+          { title: "02.07 O Segundo Sol",  url: "https://mp3-128.jango.com/music/06/27/33/0627339709.mp3" },
+          { title: "03.07 Luz Dos Olhos",  url: "https://mp3-128.jango.com/music/19/78/59/1978599363.mp3" },
+          { title: "04.07 E.C.T.",  url: "https://mp3-128.jango.com/music/07/42/62/0742621349.mp3" },
+          { title: "05.07 Malandragem",  url: "https://mp3-128.jango.com/music/07/26/73/0726730763.mp3" },
+          { title: "06.07 Partido Alto",  url: "https://mp3-128.jango.com/music/03/85/67/0385673741.mp3" },
+          { title: "07.07 Por Enquanto",  url: "https://mp3-128.jango.com/music/00/91/48/0091483067.mp3" }
+      ]},
+      { name: 'Cazuza', img: 'https://album1.cdn107.com/0e/6a/0e6a89ba6cc213a946123ff75677e363_xl.jpg?i=1', tracks: [
+          { title: "01.07 Brasil",  url: "https://mp3-128.jango.com/music/01/51/91/0151919935.mp3" },
+          { title: "02.07 Boas Novas",  url: "https://mp3-128.jango.com/music/16/79/15/1679152146.mp3" },
+          { title: "03.07 Codinome Beija-Flor",  url: "https://mp3-128.jango.com/music/01/06/00/01060069890.mp3" },
+          { title: "04.07 O Tempo Não Pára",  url: "https://mp3-128.jango.com/music/09/89/53/0989533586.mp3" },
+          { title: "05.07 Ideologia",  url: "https://mp3-128.jango.com/music/19/32/15/1932157466.mp3" },
+          { title: "06.07 Vida Louca Vida",  url: "https://mp3-128.jango.com/music/04/28/29/0428295847.mp3" },
+          { title: "07.07 Faz Parte Do Meu Show",  url: "https://mp3-128.jango.com/music/03/86/26/0386262732.mp3" }
+      ]},
+      { name: 'Kid Abelha', img: 'https://album1.cdn107.com/29/ab/29ab09c6e6624c2d3561ae62d752bc9e_xl.jpg?i=1', tracks: [
+          { title: "01.08 Brasil",  url: "https://mp3-128.jango.com/music/04/25/44/0425442988.mp3" },
+          { title: "02.08 Como Eu Quero",  url: "https://mp3-128.jango.com/music/21/33/62/2133626080.mp3" },
+          { title: "03.08 No seu lugar",  url: "https://mp3-128.jango.com/music/17/11/01/1711014499.mp3" },
+          { title: "04.08 Maio",  url: "https://mp3-128.jango.com/music/10/67/15/1067158172.mp3" },
+          { title: "05.08 Quero te encontrar",  url: "https://mp3-128.jango.com/music/16/82/51/1682516499.mp3" },
+          { title: "06.08 Na Rua Na Chuva Na Fazenda",  url: "https://mp3-128.jango.com/music/12/32/62/1232629351.mp3" },
+          { title: "07.08 Eu Tive Um Sonho",  url: "https://mp3-128.jango.com/music/01/06/59/0106599356.mp3" },
+          { title: "08.08 Nada Sei",  url: "https://mp3-128.jango.com/music/00/78/82/0078827556.mp3" }
+      ]},
+      { name: 'Luciana Mello', img: 'https://i.scdn.co/image/ab67616d0000b273dfa9be216bac3ef369f7d429', tracks: [
+          { title: "01.04 Simples desejo",  url: "https://mp3-128.jango.com/music/01/02/47/0102474263.mp3" },
+          { title: "02.04 As Rosas não Falam",  url: "https://mp3-128.jango.com/music/09/84/37/0984371998.mp3" },
+          { title: "03.04 Sem Tempo a Perder",  url: "https://mp3-128.jango.com/music/12/70/08/1270080785.mp3" },
+          { title: "04.04 Prazer e Luz",  url: "https://mp3-128.jango.com/music/04/87/17/0487174891.mp3" }
+      ]},
+      { name: 'Maria Gadú', img: 'https://album1.cdn107.com/8d/b0/8db0aeabf2ac55b4b33842545a0b2c4f_xl.jpg?i=1', tracks: [
+          { title: "Shimbalaiê",  url: "https://mp3-128.jango.com/music/13/22/99/1322993138.mp3" },
+          { title: "Escudos",  url: "https://mp3-128.jango.com/music/07/56/22/0756221456.mp3" },
+          { title: "Lounge",  url: "https://mp3-128.jango.com/music/16/89/73/1689730223.mp3" },
+          { title: "Bela Flor",  url: "https://mp3-128.jango.com/music/05/44/35/0544351981.mp3" },
+          { title: "Dona Cila",  url: "https://mp3-128.jango.com/music/06/94/31/0694311488.mp3" },
+          { title: "Altar Particular",  url: "https://mp3-128.jango.com/music/08/15/56/0815565100.mp3" }
+        ]}
+      ];
+
+    const foreigners = [
       { name: 'Enya', img: 'https://album1.cdn107.com/b5/fe/b5fe4b1fb3f79463080f1a2e06de8e3b_xl.jpg', tracks: [
           { title: "01.64 I Want Tomorrow", url: "https://mp3-128.jango.com/music/05/20/07/0520072108.mp3" },
           { title: "02.64 March of the Celts", url: "https://mp3-128.jango.com/music/08/04/57/0804572890.mp3" },
@@ -577,7 +650,9 @@ header h1 {
           { title: "09.10 Sometimes When It Rains",  url: "https://m4a-64.jango.com/02/26/68/0226689738.m4a" },
           { title: "10.10 Sleepsong",  url: "https://m4a-64.jango.com/01/19/38/0119384968.m4a" }
       ]}
+
     ];
+
 
     function createCard(item, type) {
       const card = document.createElement('div');
@@ -586,6 +661,8 @@ header h1 {
         if (type === 'radio') {
           playRadio(item);
         } else if (type === 'artist') {
+          playArtist(item);
+        } else if (type === 'foreign') {
           playArtist(item);
         }
         document.title = `Rádios e Seleções - ${item.name}`;
@@ -615,6 +692,9 @@ header h1 {
       artists.forEach(artist => {
         artistListContainer.appendChild(createCard(artist, 'artist'));
       });
+      foreigners.forEach(foreign => {
+        foreignListContainer.appendChild(createCard(foreign, 'foreign'));
+      });
     }
 
     function updatePlayPauseIcon() {
@@ -632,8 +712,8 @@ header h1 {
       currentMediaImg.src = currentMediaInfo.img || "https://imgur.com/qFmcbT0.png";
       currentMediaName.textContent = currentMediaInfo.name || "Selecione uma rádio ou artista";
       currentTrackName.textContent = currentMediaInfo.trackTitle || '';
-      artistControls.style.display = currentMediaType === 'artist' ? 'flex' : 'none';
-      progressBar.style.display = currentMediaType === 'artist' ? 'block' : 'none';
+      artistControls.style.display = currentMediaType === 'artist' || currentMediaType === 'foreign' ? 'flex' : 'none';
+      progressBar.style.display = currentMediaType === 'artist' || currentMediaType === 'foreign' ? 'block' : 'none';
       updatePlayPauseIcon();
       updateLoopButton();
       waveContainer.classList.toggle('playing', isPlaying);
@@ -726,7 +806,7 @@ header h1 {
     }
 
     function updateProgress() {
-      if (currentMediaType === 'artist') {
+      if (currentMediaType === 'artist' || currentMediaType === 'foreign') {
         const currentTime = audioPlayer.currentTime;
         const duration = audioPlayer.duration;
         progress.value = (currentTime / duration) * 100;
@@ -734,13 +814,13 @@ header h1 {
     }
 
     function playNext() {
-      if (currentMediaType !== 'artist' || currentPlaylist.length === 0) return;
+      if ((currentMediaType !== 'artist' && currentMediaType !== 'foreign') || currentPlaylist.length === 0) return;
       currentTrackIndex++;
       playTrack();
     }
 
     function playPrevious() {
-      if (currentMediaType !== 'artist' || currentPlaylist.length === 0) return;
+      if ((currentMediaType !== 'artist' && currentMediaType !== 'foreign') || currentPlaylist.length === 0) return;
       currentTrackIndex--;
       if (currentTrackIndex < 0) {
         currentTrackIndex = currentPlaylist.length - 1;
@@ -798,21 +878,57 @@ header h1 {
         }
       });
 
+      // Buscar estrangeiros e músicas
+      foreigners.forEach(foreign => {
+        if (addedArtists.has(foreign.name)) return;
+
+        let foreignAdded = false;
+        const matchingTracks = [];
+
+        // Verificar nome do estrangeiro
+        if (foreign.name.toLowerCase().includes(query)) {
+          results.push(foreign);
+          addedArtists.add(foreign.name);
+          foreignAdded = true;
+        }
+
+        // Verificar músicas do estrangeiro
+        if (!foreignAdded) {
+          foreign.tracks.forEach((track, trackIndex) => {
+            if (track.title.toLowerCase().includes(query)) {
+              matchingTracks.push(trackIndex);
+            }
+          });
+
+          if (matchingTracks.length > 0) {
+            const foreignCopy = { 
+              ...foreign, 
+              searchTrackIndex: matchingTracks[0] 
+            };
+            results.push(foreignCopy);
+            addedArtists.add(foreign.name);
+          }
+        }
+      });
+
       // Atualizar listas
       radioListContainer.innerHTML = '';
       artistListContainer.innerHTML = '';
+      foreignListContainer.innerHTML = '';
 
       results.forEach(media => {
         if (media.url) {
           radioListContainer.appendChild(createCard(media, 'radio'));
-        } else {
+        } else if (artists.includes(media)) {
           artistListContainer.appendChild(createCard(media, 'artist'));
+        } else {
+          foreignListContainer.appendChild(createCard(media, 'foreign'));
         }
       });
     }
 
     audioPlayer.onended = () => {
-      if (currentMediaType === 'artist') {
+      if (currentMediaType === 'artist' || currentMediaType === 'foreign') {
         playNext();
       } else {
         isPlaying = false;
