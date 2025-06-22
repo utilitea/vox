@@ -555,6 +555,25 @@
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
+.track-item.playing {
+    background: var(--secondary); /* Um verde um pouco mais escuro para destaque */
+    color: white; /* Texto claro */
+    font-weight: 500;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15); /* Uma sombra mais proeminente */
+    transform: scale(1.01); /* Um leve aumento para visual mais dinâmico */
+}
+
+.track-item.playing .track-number,
+.track-item.playing .track-info-small .track-name-small,
+.track-item.playing .track-info-small .track-duration {
+    color: white; /* Garante que o texto dentro também fique branco */
+}
+
+.track-item.playing .play-track-btn {
+    background: white; /* Botão de play branco */
+    color: var(--secondary); /* Ícone com a cor de destaque */
+}
+
         .track-number {
             font-size: 0.9rem;
             color: var(--text);
@@ -1228,7 +1247,7 @@
                 },
                 {
                     artist: "Caetano & Gil",
-                    img: "https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2025/04/Gilberto-Gil-Caetano-Veloso-4387.jpg",
+                    img: "https://upload.wikimedia.org/wikipedia/pt/thumb/b/b4/Dois_Amigos%2C_Um_S%C3%A9culo_de_M%C3%BAsica_%28turn%C3%AA%29.jpg/500px-Dois_Amigos%2C_Um_S%C3%A9culo_de_M%C3%BAsica_%28turn%C3%AA%29.jpg",
                     tracks: [
                        { name: "Desde Que O Samba E Samba", url: "https://mp3-128.jango.com/music/02/17/30/0217306848.mp3" },
                        { name: "Toda Menina Baiana", url: "https://m4a-64.jango.com/39/58/46/395846594184417468.m4a" }
@@ -1634,7 +1653,7 @@
                 },
                 {
                    artist: "Roupa Nova",
-                   img: "https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2024/09/navio-roupa-nova.jpg",
+                   img: "https://upload.wikimedia.org/wikipedia/commons/f/ff/Show_da_Banda_Roupa_Nova%2C_18_July_2008.jpg",
                    tracks: [
                        { name: "Seguindo No Trem Azul", url: "https://mp3-128.jango.com/music/12/61/24/1261242068.mp3" }
                    ]
@@ -2049,7 +2068,7 @@
                 },
                 {
                     artist: "Elton John",
-                    img: "https://www.cnnbrasil.com.br/wp-content/uploads/sites/12/2021/09/Elton-John-e1742911851951.jpg",
+                    img: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/EltonDocBFILFF101024_%284_of_17%29_%28cropped%29.jpg/500px-EltonDocBFILFF101024_%284_of_17%29_%28cropped%29.jpg",
                     tracks: [
                         { name: "Don't Let the Sun Go Down on Me", url: "https://m4a-64.jango.com/02/61/90/0261906104.m4a" },
                         { name: "Rocket Man", url: "https://m4a-64.jango.com/32/75/53/3275535214979568289.m4a" },
@@ -2181,7 +2200,7 @@
 },
 {
    artist: "Heloisa Rosa",
-   img: "https://pbs.twimg.com/profile_images/1728044359675744256/Xp5hdJ7k_400x400.jpg",
+   img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQhz5Gn3QEMbNQzF8S-705rkFapL50270xifw&s",
    tracks: [
        { name: "Yeshua (Ao Vivo)", url: "https://m4a-64.jango.com/12/27/28/1227283977349832361.m4a" }
    ]
@@ -2532,9 +2551,35 @@
         let currentCategory = '';
         let currentArtist = '';
         let eqInterval;
+
+// Variável global para armazenar o item da lista que está tocando
+let currentlyPlayingTrackElement = null;
+
+// Função para remover o destaque da música anterior
+function clearPlayingHighlight() {
+    if (currentlyPlayingTrackElement) {
+        currentlyPlayingTrackElement.classList.remove('playing');
+        // Opcional: reverter o ícone do botão de play se ele tiver sido alterado para pausa
+        const playBtn = currentlyPlayingTrackElement.querySelector('.play-track-btn i');
+        if (playBtn && playBtn.classList.contains('fa-pause')) {
+            playBtn.classList.remove('fa-pause');
+            playBtn.classList.add('fa-play');
+        }
+        currentlyPlayingTrackElement = null; // Zera a referência
+    }
+}
         
         // Initialize the player
         function init() {
+    const storedFavorites = localStorage.getItem('flux_favorites');
+    if (storedFavorites) {
+        try {
+            audioData.favorites = JSON.parse(storedFavorites);
+        } catch (e) {
+            console.error("Erro ao carregar favoritos do localStorage:", e);
+            audioData.favorites = []; // Limpa favoritos se houver erro no parsing
+        }
+    }
             // Load radio stations
             loadRadioStations();
             
@@ -2778,10 +2823,22 @@ function showTracks(category, artist) {
             </div>
         `;
 
-        trackItem.querySelector('.play-track-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            playTrack(category, artist, index);
-        });
+    const playTrackBtn = trackItem.querySelector('.play-track-btn');
+    playTrackBtn.addEventListener('click', (e) => {
+        e.stopPropagation(); // Impede que o clique no botão ative o clique no card inteiro
+
+        if (currentlyPlayingTrackElement === trackItem && audioPlayer.paused) {
+            playAudio(); // Apenas dá play de onde parou
+        } 
+        // Verifica se a música clicada é a que está atualmente carregada e tocando (para pausar)
+        else if (currentlyPlayingTrackElement === trackItem && !audioPlayer.paused) {
+            pauseAudio(); // Pausa a música
+        }
+        // Se for uma música diferente, ou a mesma mas precisa recarregar
+        else {
+            playTrack(category, artist, index); // Toca a música do início (ou carrega uma nova)
+        }
+    });
 
         trackItemsContainer.appendChild(trackItem);
     });
@@ -2842,6 +2899,7 @@ function playTrackFromPlaylist() {
     if (currentTrackIndex >= currentPlaylist.length) {
         // Fim da playlist
         stopAudio();
+        clearPlayingHighlight();
         return;
     }
     
@@ -2883,6 +2941,8 @@ function playTrackFromPlaylist() {
         track.name.split('.')[1].trim() : track.name;
     artistName.textContent = track.artist || "Artista Desconhecido"; // Garante que o nome do artista seja exibido
     coverArt.src = artistImg || "https://utilitea.github.io/som/flux.png"; // Use a imagem do artista, ou uma capa padrão
+
+    clearPlayingHighlight();
     
     // Configura o evento 'ended' para tocar a próxima música
     audioPlayer.onended = function() {
@@ -2893,6 +2953,24 @@ function playTrackFromPlaylist() {
     // Toca a música
     audioPlayer.src = track.url;
     playAudio();
+
+    const tracksListContainer = document.getElementById(`${currentCategory}-tracks`);
+    // Verifica se a lista de faixas está visível para aplicar o destaque
+    if (tracksListContainer && tracksListContainer.style.display !== 'none') {
+        const trackItems = tracksListContainer.querySelectorAll('.track-item');
+        if (trackItems[currentTrackIndex]) {
+            currentlyPlayingTrackElement = trackItems[currentTrackIndex];
+            currentlyPlayingTrackElement.classList.add('playing');
+            // Mudar o ícone do botão de play para pausa na própria linha
+            const playBtn = currentlyPlayingTrackElement.querySelector('.play-track-btn i');
+            if (playBtn) {
+                playBtn.classList.remove('fa-play');
+                playBtn.classList.add('fa-pause');
+            }
+            // Role para a música em reprodução, se necessário
+            currentlyPlayingTrackElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
     
     // Rolagem para o topo
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -2913,7 +2991,9 @@ function playTrackFromPlaylist() {
         function playTrack(category, artist, trackIndex) {
             const artistData = audioData[category].find(a => a.artist === artist);
             const track = artistData.tracks[trackIndex];
-            
+
+            clearPlayingHighlight();
+
             // Update player info
             trackName.textContent = track.name.split('.').length > 1 ? 
                 track.name.split('.')[1].trim() : track.name;
@@ -2929,6 +3009,23 @@ function playTrackFromPlaylist() {
             currentPlaylist = artistData.tracks;
             currentCategory = category;
             currentArtist = artist;
+
+    const tracksListContainer = document.getElementById(`${category}-tracks`);
+    if (tracksListContainer && tracksListContainer.style.display !== 'none') {
+        const trackItems = tracksListContainer.querySelectorAll('.track-item');
+        if (trackItems[trackIndex]) {
+            currentlyPlayingTrackElement = trackItems[trackIndex];
+            currentlyPlayingTrackElement.classList.add('playing');
+            // Mudar o ícone do botão de play para pausa na própria linha
+            const playBtn = currentlyPlayingTrackElement.querySelector('.play-track-btn i');
+            if (playBtn) {
+                playBtn.classList.remove('fa-play');
+                playBtn.classList.add('fa-pause');
+            }
+            // Role para a música em reprodução, se necessário
+            currentlyPlayingTrackElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
             
             // Scroll to top only when playback starts
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -3016,6 +3113,7 @@ function showCategory(category) {
                     type: 'radio',
                     data: { ...radio }
                 });
+                saveFavorites();
                 
                 // Update favorites section if visible
                 if (document.getElementById('favorites-section').style.display === 'block') {
@@ -3043,6 +3141,7 @@ function addArtistToFavorites(category, index, event) {
             type: 'artist',
             data: { ...artist }
         });
+        saveFavorites();
 
         // Adicionar a classe 'favorited' ao botão
         const favoriteBtn = event.currentTarget.querySelector('.add-to-favorites');
@@ -3079,12 +3178,14 @@ function addArtistToFavorites(category, index, event) {
                         img: artistData.img
                     }
                 });
+                saveFavorites();
                 
                 button.classList.add('favorited');
                 showFeedback('Música adicionada aos favoritos!');
             } else {
                 // Remove from favorites
                 audioData.favorites.splice(favIndex, 1);
+                saveFavorites();
                 button.classList.remove('favorited');
                 showFeedback('Música removida dos favoritos!');
             }
@@ -3099,6 +3200,7 @@ function addArtistToFavorites(category, index, event) {
         function removeFromFavorites(index, event) {
             event.stopPropagation();
             audioData.favorites.splice(index, 1);
+            saveFavorites();
             loadFavorites();
             
             // Show feedback
@@ -3142,6 +3244,14 @@ function addArtistToFavorites(category, index, event) {
             isPlaying = true;
             audioPlayer.play();
             playBtn.innerHTML = '<i class="fas fa-pause"></i>';
+    // Se houver um elemento de música tocando, mude seu ícone para pausa
+    if (currentlyPlayingTrackElement) {
+        const playBtnInTrackItem = currentlyPlayingTrackElement.querySelector('.play-track-btn i');
+        if (playBtnInTrackItem) {
+            playBtnInTrackItem.classList.remove('fa-play');
+            playBtnInTrackItem.classList.add('fa-pause');
+        }
+    }
         }
         
         // Pause audio
@@ -3149,6 +3259,15 @@ function addArtistToFavorites(category, index, event) {
             isPlaying = false;
             audioPlayer.pause();
             playBtn.innerHTML = '<i class="fas fa-play"></i>';
+
+    // Se houver um elemento de música tocando, mude seu ícone para play
+    if (currentlyPlayingTrackElement) {
+        const playBtnInTrackItem = currentlyPlayingTrackElement.querySelector('.play-track-btn i');
+        if (playBtnInTrackItem) {
+            playBtnInTrackItem.classList.remove('fa-pause');
+            playBtnInTrackItem.classList.add('fa-play');
+        }
+    }
         }
         
         // Stop audio
@@ -3159,6 +3278,7 @@ function addArtistToFavorites(category, index, event) {
             playBtn.innerHTML = '<i class="fas fa-play"></i>';
             progressBar.style.width = '0%';
             currentTimeEl.textContent = '0:00';
+            clearPlayingHighlight();
         }
         
         // Previous track
@@ -3233,6 +3353,13 @@ function nextTrack() {
             return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
         }
         
+function saveFavorites() {
+    try {
+        localStorage.setItem('flux_favorites', JSON.stringify(audioData.favorites));
+    } catch (e) {
+        console.error("Erro ao salvar favoritos no localStorage:", e);
+    }
+}
         // Initialize the player when the DOM is loaded
         document.addEventListener('DOMContentLoaded', init);
         
