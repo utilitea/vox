@@ -2837,6 +2837,8 @@ function playAllGroup(category) {
 }
 
 function playTrackFromPlaylist() {
+    if (currentPlaylist.length === 0) return; // Garante que há músicas na playlist
+
     if (currentTrackIndex >= currentPlaylist.length) {
         // Fim da playlist
         stopAudio();
@@ -2845,11 +2847,42 @@ function playTrackFromPlaylist() {
     
     const track = currentPlaylist[currentTrackIndex];
     
+    // Encontre a imagem do artista da música atual na playlist
+    let artistImg = '';
+    // Se a música tem a propriedade 'img' (para caso de playAllGroup), use-a
+    if (track.img) {
+        artistImg = track.img;
+    } else { // Caso contrário, tente encontrar o artista na categoria original
+        const originalCategoryData = audioData[currentCategory];
+        if (originalCategoryData) {
+            const artistFound = originalCategoryData.find(a => a.artist === currentArtist); // Use currentArtist que armazena o artista da lista original
+            if (artistFound) {
+                artistImg = artistFound.img;
+            }
+        }
+    }
+
+    // Se ainda não encontrou, e a música tem um 'artist' definido (caso de playAllGroup), tente buscar pela imagem do artista genérico.
+    // Isso é importante para playlists "Play All Group" onde 'currentArtist' pode ser vazio ou genérico
+    if (!artistImg && track.artist) {
+        // Itera sobre todas as categorias para encontrar a imagem do artista
+        for (const cat in audioData) {
+            if (Array.isArray(audioData[cat])) {
+                const foundArtistInAnyCategory = audioData[cat].find(a => a.artist === track.artist);
+                if (foundArtistInAnyCategory) {
+                    artistImg = foundArtistInAnyCategory.img;
+                    break;
+                }
+            }
+        }
+    }
+
+
     // Atualiza as informações do player
     trackName.textContent = track.name.split('.').length > 1 ? 
         track.name.split('.')[1].trim() : track.name;
-    artistName.textContent = track.artist;
-    coverArt.src = track.img;
+    artistName.textContent = track.artist || "Artista Desconhecido"; // Garante que o nome do artista seja exibido
+    coverArt.src = artistImg || "https://utilitea.github.io/som/flux.png"; // Use a imagem do artista, ou uma capa padrão
     
     // Configura o evento 'ended' para tocar a próxima música
     audioPlayer.onended = function() {
