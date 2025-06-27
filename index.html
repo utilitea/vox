@@ -370,11 +370,7 @@
     box-shadow: 0 0 4px rgba(0,0,0,0.2);
 }
 
-/* Cores alternadas para um efeito mais dinâmico */
-.eq-bar:nth-child(odd) { background: var(--primary); }
-.eq-bar:nth-child(even) { background: var(--secondary); }
-.eq-bar:nth-child(3n) { background: var(--eq-color-3); }
-.eq-bar:nth-child(5n) { background: var(--eq-color-4); }
+
 
         .category-buttons {
             display: flex;
@@ -2629,45 +2625,57 @@ function clearPlayingHighlight() {
         
         // Equalizer animation
 function startEqualizer() {
-    stopEqualizer();
-    
-    // Obter as cores CSS computadas
+    stopEqualizer(); // Garante que nenhum intervalo anterior esteja rodando
+
+    // Obter as cores CSS computadas dinamicamente
     const styles = getComputedStyle(document.documentElement);
-    const primaryColor = styles.getPropertyValue('--primary').trim();
-    const secondaryColor = styles.getPropertyValue('--secondary').trim();
-    const eqColor3 = styles.getPropertyValue('--eq-color-3').trim();
-    const eqColor4 = styles.getPropertyValue('--eq-color-4').trim();
+    const eqColors = [
+        styles.getPropertyValue('--eq-color-1').trim(),
+        styles.getPropertyValue('--eq-color-2').trim(),
+        styles.getPropertyValue('--eq-color-3').trim(),
+        styles.getPropertyValue('--eq-color-4').trim(),
+        styles.getPropertyValue('--eq-color-5').trim(),
+        styles.getPropertyValue('--eq-color-6').trim(),
+        styles.getPropertyValue('--eq-color-7').trim(),
+        styles.getPropertyValue('--eq-color-8').trim(),
+        styles.getPropertyValue('--eq-color-9').trim(),
+        styles.getPropertyValue('--eq-color-10').trim(),
+        styles.getPropertyValue('--eq-color-11').trim(),
+        styles.getPropertyValue('--eq-color-12').trim()
+    ].filter(color => color); // Garante que apenas cores válidas sejam incluídas
     
+    // Fallback para cores se as do equalizador não forem encontradas
+    if (eqColors.length === 0) {
+        eqColors.push(styles.getPropertyValue('--primary').trim());
+        eqColors.push(styles.getPropertyValue('--secondary').trim());
+    }
+
     eqInterval = setInterval(() => {
         const eqBars = equalizer.querySelectorAll('.eq-bar');
         const now = Date.now();
         
         eqBars.forEach((bar, index) => {
-            // Usa uma função senoidal para criar um movimento mais natural
+            // Animação da altura (como você já tinha, simulando as ondas do som)
             const timeFactor = now * 0.002;
             const positionFactor = index * 0.3;
-            const randomHeight = Math.sin(timeFactor + positionFactor) * 0.5 + 0.5; // Valor entre 0 e 1
-            
-            // Converte para altura em pixels (5px a 40px)
-            const height = 5 + randomHeight * 35;
+            const randomHeight = Math.sin(timeFactor + positionFactor) * 0.5 + 0.5;
+            const height = 5 + randomHeight * 35; // Altura entre 5px e 40px
             bar.style.height = `${height}px`;
+
+            // --- INÍCIO DA NOVA LÓGICA DE COR DINÂMICA ---
+            // Calcular um índice de cor que se move ao longo do tempo e das barras
+            // Usamos `timeFactor` e `index` para criar o efeito de "passar"
+            const animatedColorIndex = Math.floor((timeFactor * 2 + index) % eqColors.length);
+            const colorToApply = eqColors[animatedColorIndex];
+
+            // Aplicar a cor dinâmica
+            bar.style.backgroundColor = colorToApply;
+            // --- FIM DA NOVA LÓGICA DE COR DINÂMICA ---
             
-            // Efeito de cor dinâmica baseado na altura
-            const intensity = height / 40;
-            if (intensity > 0.8) {
-                bar.style.backgroundColor = eqColor4; // Vermelho para picos altos
-            } else if (intensity > 0.6) {
-                bar.style.backgroundColor = eqColor3; // Rosa para médio-alto
-            } else if (index % 2 === 0) {
-                bar.style.backgroundColor = secondaryColor;
-            } else {
-                bar.style.backgroundColor = primaryColor;
-            }
-            
-            // Suaviza a transição
-            bar.style.transition = `height ${0.05 + (index % 3) * 0.02}s ease-out, background-color 0.2s ease`;
+            // Suaviza a transição da altura e da cor para um efeito mais fluido
+            bar.style.transition = `height 0.08s ease-out, background-color 0.3s ease`;
         });
-    }, 50);
+    }, 50); // Atualiza a cada 50ms para um movimento suave
 }
         
         function stopEqualizer() {
@@ -2987,8 +2995,7 @@ function playTrackFromPlaylist() {
             playRadio(audioData.radio[0]);
         }
         
-        // Play a specific track
-        function playTrack(category, artist, trackIndex) {
+function playTrack(category, artist, trackIndex) {
             const artistData = audioData[category].find(a => a.artist === artist);
             const track = artistData.tracks[trackIndex];
 
@@ -3009,6 +3016,13 @@ function playTrackFromPlaylist() {
             currentPlaylist = artistData.tracks;
             currentCategory = category;
             currentArtist = artist;
+
+            // --- INÍCIO DA MODIFICAÇÃO: Mostrar barra de progresso para músicas ---
+            progressBar.style.display = 'block';
+            progressContainer.style.background = 'rgba(255, 255, 255, 0.3)'; // Restaura o background
+            currentTimeEl.style.display = 'block';
+            durationEl.style.display = 'block';
+            // --- FIM DA MODIFICAÇÃO ---
 
     const tracksListContainer = document.getElementById(`${category}-tracks`);
     if (tracksListContainer && tracksListContainer.style.display !== 'none') {
@@ -3053,8 +3067,7 @@ function playTrackFromPlaylist() {
             }
         }
         
-        // Play a radio station
-        function playRadio(station) {
+function playRadio(station) {
             // Update player info
             trackName.textContent = station.name;
             artistName.textContent = "Rádio Online";
@@ -3064,9 +3077,19 @@ function playTrackFromPlaylist() {
             audioPlayer.src = station.url;
             playAudio();
             
-            // Update current playlist (empty for radio)
-            currentPlaylist = [];
+            // Update current playlist for radio
+            // Definimos a currentPlaylist como a lista de rádios para que next/prev funcione
+            currentPlaylist = audioData.radio;
+            currentTrackIndex = audioData.radio.findIndex(r => r.url === station.url); // Encontra o índice da rádio atual
             currentCategory = 'radio';
+            currentArtist = ''; // Limpa o artista para rádios
+
+            // --- INÍCIO DA MODIFICAÇÃO: Ocultar barra de progresso para rádios ---
+            progressBar.style.display = 'none';
+            progressContainer.style.background = 'none'; // Remove o background da área da barra
+            currentTimeEl.style.display = 'none';
+            durationEl.style.display = 'none';
+            // --- FIM DA MODIFICAÇÃO ---
             
             // Scroll to top only when playback starts
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -3283,27 +3306,45 @@ function addArtistToFavorites(category, index, event) {
         
         // Previous track
 function prevTrack() {
-    if (currentPlaylist.length === 0) return;
-    
-    currentTrackIndex--;
-    if (currentTrackIndex < 0) {
-        currentTrackIndex = currentPlaylist.length - 1; // Vai para o final se estiver no início
-    }
-    
-    playTrackFromPlaylist();
-}
+            if (currentPlaylist.length === 0) return;
+            
+            // Se a categoria atual for 'radio', navega entre as rádios
+            if (currentCategory === 'radio') {
+                currentTrackIndex--;
+                if (currentTrackIndex < 0) {
+                    currentTrackIndex = audioData.radio.length - 1; // Vai para a última rádio
+                }
+                playRadio(audioData.radio[currentTrackIndex]);
+            } else {
+                // Se for uma categoria de músicas, navega na playlist atual
+                currentTrackIndex--;
+                if (currentTrackIndex < 0) {
+                    currentTrackIndex = currentPlaylist.length - 1; // Vai para o final da playlist de músicas
+                }
+                playTrackFromPlaylist();
+            }
+        }
         
-        // Next track
+// Previous nextTrack
 function nextTrack() {
-    if (currentPlaylist.length === 0) return;
-    
-    currentTrackIndex++;
-    if (currentTrackIndex >= currentPlaylist.length) {
-        currentTrackIndex = 0; // Volta ao início se chegar ao fim
-    }
-    
-    playTrackFromPlaylist();
-}
+            if (currentPlaylist.length === 0) return;
+            
+            // Se a categoria atual for 'radio', navega entre as rádios
+            if (currentCategory === 'radio') {
+                currentTrackIndex++;
+                if (currentTrackIndex >= audioData.radio.length) {
+                    currentTrackIndex = 0; // Volta para a primeira rádio
+                }
+                playRadio(audioData.radio[currentTrackIndex]);
+            } else {
+                // Se for uma categoria de músicas, navega na playlist atual
+                currentTrackIndex++;
+                if (currentTrackIndex >= currentPlaylist.length) {
+                    currentTrackIndex = 0; // Volta ao início da playlist de músicas
+                }
+                playTrackFromPlaylist();
+            }
+        }
         
         // Set progress
         function setProgress(e) {
