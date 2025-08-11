@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flux</title>
+    <title>Vox</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="icon" href="https://utilitea.github.io/vox/Vox.png" type="image/png">
@@ -979,7 +979,7 @@
             <div class="search-results" id="searchResults"></div>
         </div>
     </div>
-    <h1>Flux</h1>
+    <h1>Vox</h1>
     <p class="subtitle">Sua plataforma de áudio online</p>
 </header>
 
@@ -991,7 +991,7 @@
         <img src="https://utilitea.github.io/vox/Vox.png" alt="Capa" class="cover-art" id="coverArt">
         <div class="track-info">
             <div class="track-name" id="trackName">Selecione uma música</div>
-            <div class="artist-name" id="artistName">Flux</div>
+            <div class="artist-name" id="artistName">Vox</div>
         </div>
     </div>
 </div>
@@ -2577,7 +2577,7 @@ function clearPlayingHighlight() {
         
         // Initialize the player
         function init() {
-    const storedFavorites = localStorage.getItem('flux_favorites');
+    const storedFavorites = localStorage.getItem('Vox_favorites');
     if (storedFavorites) {
         try {
             audioData.favorites = JSON.parse(storedFavorites);
@@ -3406,7 +3406,7 @@ function nextTrack() {
         
 function saveFavorites() {
     try {
-        localStorage.setItem('flux_favorites', JSON.stringify(audioData.favorites));
+        localStorage.setItem('Vox_favorites', JSON.stringify(audioData.favorites));
     } catch (e) {
         console.error("Erro ao salvar favoritos no localStorage:", e);
     }
@@ -3617,5 +3617,6 @@ document.addEventListener('click', (e) => {
     </style>
 </body>
 </html>
+
 
 
