@@ -3670,14 +3670,25 @@ function focusElement(index) {
 }
 
 document.addEventListener('keydown', (e) => {
-    // Impede o scroll padrão da página com as setas
-    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+    // Impede o scroll padrão da página com as setas e Backspace
+    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Backspace'].includes(e.key)) {
         e.preventDefault();
     }
     
-    // Atualiza a lista de elementos navegáveis a cada evento de tecla, caso o layout tenha mudado (ex: abriu a lista de músicas)
+    // Lógica para a tecla 'Backspace'
+    if (e.key === 'Backspace') {
+        if (currentCategory && currentArtist) {
+            backToArtists(currentCategory);
+        }
+        return; 
+    }
+
+    // Atualiza a lista de elementos navegáveis
     updateNavigableElements();
 
+    if (navigableElements.length === 0) return;
+
+    // Lógica para as teclas direcionais (setas)
     if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
         let newIndex = focusedIndex + 1;
         if (newIndex >= navigableElements.length) {
@@ -3692,13 +3703,22 @@ document.addEventListener('keydown', (e) => {
         focusElement(newIndex);
     } else if (e.key === 'Enter') {
         if (focusedIndex !== -1) {
-            navigableElements[focusedIndex].click();
+            const focusedElement = navigableElements[focusedIndex];
+            
+            // Verifica se o elemento focado é um item de música
+            if (focusedElement.classList.contains('track-item')) {
+                const playButton = focusedElement.querySelector('.play-track-btn');
+                if (playButton) {
+                    playButton.click(); // Clica no botão de play, que já funciona
+                }
+            } else {
+                focusedElement.click(); // Para todos os outros botões, usa o clique normal
+            }
         }
     }
 });
 
-// Inicializa a lista de elementos navegáveis ao carregar a página
-document.addEventListener('DOMContentLoaded', updateNavigableElements);
+// A função updateNavigableElements() e as outras permanecem como estão.
 
     </script>
     <style>
