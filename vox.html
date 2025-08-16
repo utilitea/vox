@@ -1977,7 +1977,7 @@ radio: [
         highlightPlayingTrack();
     }
     
-    function playRadio(station) {
+function playRadio(station) {
         currentPlaylist = audioData.radio;
         currentTrackIndex = audioData.radio.findIndex(r => r.url === station.url);
         currentCategory = 'radio';
@@ -1988,6 +1988,11 @@ radio: [
 
         document.getElementById('progressContainer').style.display = 'none';
         document.getElementById('time-info').style.display = 'none';
+        
+        // Linhas adicionadas para garantir que o tempo seja limpo
+        currentTimeEl.textContent = ""; 
+        durationEl.textContent = "Ao Vivo";
+
         clearPlayingHighlight();
     }
     
@@ -2070,8 +2075,13 @@ radio: [
         currentTimeEl.textContent = formatTime(currentTime);
     }
     
-    function updateDuration() {
-        durationEl.textContent = formatTime(audioPlayer.duration);
+function updateDuration() {
+        // Verifica se a duração é um número finito antes de formatar
+        if (isFinite(audioPlayer.duration)) {
+            durationEl.textContent = formatTime(audioPlayer.duration);
+        } else {
+            durationEl.textContent = "Ao Vivo"; // Mostra "Ao Vivo" para rádios/streams
+        }
     }
 
     function setProgress(e) {
@@ -2264,3 +2274,4 @@ radio: [
 </script>
 </body>
 </html>
+
