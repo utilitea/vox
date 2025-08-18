@@ -6,7 +6,7 @@
     <title>Vox</title>
     <meta property="og:title" content="Vox - Sua plataforma de áudio online">
     <meta property="og:description" content="Descubra e ouça suas músicas e rádios favoritas em um só lugar.">
-    <meta property="og:image" content="https://utilitea.github.io/vox/vox2.png">
+    <meta property="og:image" content="https://utilitea.github.io/vox/vox5.png">
     <meta property="og:url" content="https://utilitea.github.io/vox">
     <meta property="og:type" content="website">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -317,7 +317,7 @@
 
 <div class="now-playing">
     <div class="player-logo-vox">
-        <img src="https://utilitea.github.io/vox/vox.png" alt="Logo Vox">
+        <img src="https://utilitea.github.io/vox/vox4.png" alt="Logo Vox">
     </div>
 
     <div class="track-info">
@@ -2371,14 +2371,20 @@ function setVolume() {
                 e.preventDefault();
                 newIndex = (focusedIndex - 1 + navigableElements.length) % navigableElements.length;
                 break;
-            case 'ArrowRight':
+        case 'ArrowRight':
+            // SÓ executa a navegação se o foco NÃO estiver no slider de volume
+            if (document.activeElement !== volumeSlider) {
                 e.preventDefault();
                 newIndex = (focusedIndex + 1) % navigableElements.length;
-                break;
-            case 'ArrowLeft':
+            }
+            break;
+        case 'ArrowLeft':
+            // SÓ executa a navegação se o foco NÃO estiver no slider de volume
+            if (document.activeElement !== volumeSlider) {
                 e.preventDefault();
                 newIndex = (focusedIndex - 1 + navigableElements.length) % navigableElements.length;
-                break;
+            }
+            break;
             case 'Enter':
                 e.preventDefault();
                 if (focusedIndex !== -1) {
@@ -2448,6 +2454,4 @@ function updateVolumeIcon() {
 </script>
 </body>
 </html>
-
-
 
