@@ -29,8 +29,7 @@
                           radial-gradient(circle at 80% 90%, rgba(0, 151, 167, 0.1) 0%, transparent 40%);
     }
     .container { max-width: 1400px; margin: 0 auto; padding: 25px; }
-    header { text-align: center; margin-bottom: 10px; position: relative; }
-    .header-logo { max-width: 60px; height: auto; display: block; margin: 0 auto; }
+
     .player-wrapper { display: flex; justify-content: center; margin-bottom: 40px; z-index: 100; }
     .player-container {
         background: var(--player-bg); border-radius: 24px; padding: 25px;
@@ -40,9 +39,14 @@
     }
     .player-content {
         position: relative; z-index: 2; display: flex; flex-direction: column;
-        gap: 20px; padding-bottom: 35px;
+        gap: 20px; padding-bottom: 50px;
     }
-    .now-playing { display: flex; align-items: center; gap: 20px; }
+    .now-playing {
+        display: flex; /* Ativa o modo Flexbox */
+        align-items: center; /* Alinha tudo verticalmente ao centro */
+        justify-content: space-between; /* Distribui o espaço entre os 3 itens */
+        gap: 15px; /* Mantém um espaçamento mínimo entre os itens */
+      }
     .cover-art {
         width: 80px; height: 80px; border-radius: 12px; object-fit: cover;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); transition: transform 0.3s ease;
@@ -118,7 +122,24 @@
         transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 8px;
     }
     .play-all-group-btn:hover { background: var(--primary); color: var(--dark-bg); }
-    .content-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 25px; }
+
+/* REGRA UNIFICADA PARA OS CARDS */
+.content-grid {
+  display: grid;
+  gap: 15px; /* Padrão para telas pequenas */
+  
+  /* Celulares (Telas Verticais): 3 colunas */
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Desktops (Telas Horizontais) */
+@media (min-width: 769px) {
+  .content-grid {
+    /* Muda para 10 colunas em telas maiores */
+    grid-template-columns: repeat(10, 1fr);
+    gap: 25px; /* Espaçamento maior para telas grandes */
+  }
+}
     .content-card {
         background: var(--card-bg); border-radius: 16px; overflow: hidden;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; cursor: pointer;
@@ -127,7 +148,7 @@
     }
     .content-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); border-color: rgba(0, 188, 212, 0.5); }
     .card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-bottom: 1px solid var(--border-color); }
-    .card-body { padding: 15px; text-align: center; }
+    .card-body { padding: 3px 5px; text-align: center; }
     .card-title { font-size: 1rem; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
     .card-subtitle { font-size: 0.8rem; color: var(--text-light); }
     .add-to-favorites {
@@ -168,41 +189,108 @@
     @media (min-width: 769px) { .player-wrapper { position: sticky; top: 20px; } }
     @media (max-width: 768px) {
         .container { padding: 15px; }
-        .content-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
         .player-container { padding: 15px; }
-        .player-content { gap: 15px; padding-bottom: 30px; }
+        .player-content { gap: 15px; padding-bottom: 50px; }
         .now-playing { gap: 15px; flex-direction: row; text-align: left; }
         .cover-art { width: 60px; height: 60px; }
         .track-name { font-size: 1.05rem; }
         .artist-name { font-size: 0.85rem; }
         .equalizer { bottom: 15px; }
     }
-    @media (max-width: 480px) {
-        .content-grid { grid-template-columns: repeat(2, 1fr); }
-        .controls-main { flex-direction: column; gap: 15px; }
-        .volume-container { width: 100%; justify-content: center; }
-        .category-btn { font-size: 0.8rem; padding: 8px 15px; }
-        .section-title { font-size: 1.5rem; }
-        .now-playing { flex-direction: column; text-align: center; }
+
+/* Adicione estas novas regras */
+.player-logo-vox img {
+  height: 80px; /* Altura da sua logo no player */
+  width: auto;
+}
+
+.track-info {
+  flex-grow: 1; /* Faz o bloco de texto crescer e ocupar o espaço central */
+  text-align: center; /* Centraliza o nome da música e do artista */
+}
+
+/* COLE ESTE BLOCO COMPLETO NO LUGAR DO SEU @media (max-width: 480px) */
+@media (max-width: 480px) {
+    /* Suas regras originais */
+
+    .category-btn {
+        font-size: 0.8rem;
+        padding: 8px 15px;
     }
+    .section-title {
+        font-size: 1.5rem;
+    }
+    .now-playing {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 30px;
+    }
+    .track-info {
+        flex-basis: 100%;
+        order: 3;
+        margin-top: 10px;
+    }
+    .player-logo-vox img {
+        height: 50px;
+    }
+
+    /* --- INÍCIO DOS AJUSTES FINAIS NOS CONTROLES DO PLAYER --- */
+
+    .controls-main {
+        display: flex;
+        align-items: center;
+        /* Voltamos a usar space-between para distribuir os 3 grupos */
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .volume-container {
+        /* O controle de volume volta a ser visível! */
+        display: flex;
+        /* Reduzimos sua largura para caber em telas menores */
+        width: 100px; 
+    }
+
+    .controls-center {
+        /* Reduzimos ainda mais o espaço entre os botões centrais */
+        gap: 8px;
+    }
+
+    .control-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .play-btn {
+        width: 48px;
+        height: 48px;
+        font-size: 1.3rem;
+    }
+    
+    /* A regra de 'order' para o botão stop não é mais necessária */
+}
 </style>
 </head>
 <body>
     <div class="container">
-        <header>
-            <img src="https://utilitea.github.io/vox/vox.png" alt="Logo Vox" class="header-logo">
-        </header>
 
         <div class="player-wrapper">
             <div class="player-container">
                 <div class="player-content">
-                    <div class="now-playing">
-                        <img src="https://utilitea.github.io/vox/vox2.png" alt="Capa" class="cover-art" id="coverArt">
-                        <div class="track-info">
-                            <div class="track-name" id="trackName">Selecione uma música</div>
-                            <div class="artist-name" id="artistName">Bem-vindo ao Vox</div>
-                        </div>
-                    </div>
+
+<div class="now-playing">
+    <div class="player-logo-vox">
+        <img src="https://utilitea.github.io/vox/vox.png" alt="Logo Vox">
+    </div>
+
+    <div class="track-info">
+        <div class="track-name" id="trackName">Selecione uma música</div>
+        <div class="artist-name" id="artistName">Bem-vindo ao Vox</div>
+    </div>
+
+    <img src="https://utilitea.github.io/vox/vox2.png" alt="Capa" class="cover-art" id="coverArt">
+</div>
 
                     <div class="player-controls">
                         <div class="progress-container" id="progressContainer">
@@ -233,15 +321,17 @@
             </div>
         </div>
 
-        <div class="category-buttons">
-            <button class="category-btn active" data-category="radio"><i class="fas fa-broadcast-tower"></i> Rádio</button>
-            <button class="category-btn" data-category="national"><i class="fas fa-flag"></i> Nacional</button>
-            <button class="category-btn" data-category="foreign"><i class="fas fa-globe"></i> Estrangeiro</button>
-            <button class="category-btn" data-category="religious"><i class="fas fa-globe"></i> Religioso</button>
-            <button class="category-btn" data-category="classical"><i class="fas fa-globe"></i> Classico</button>
-            <button class="category-btn" data-category="newage"><i class="fas fa-globe"></i> New age</button>
-            <button class="category-btn" data-category="favorites"><i class="fas fa-heart"></i> Preferidos</button>
-        </div>
+<div class="category-buttons">
+    <button class="category-btn active" data-category="radio"><i class="fas fa-broadcast-tower"></i> Rádio</button>
+    <button class="category-btn" data-category="national"><i class="fas fa-flag"></i> Nacional</button>
+    <button class="category-btn" data-category="foreign"><i class="fas fa-globe"></i> Estrangeiro</button>
+    
+    <button class="category-btn" data-category="religious"><i class="fas fa-dove"></i> Religioso</button>
+    <button class="category-btn" data-category="classical"><i class="fas fa-music"></i> Classico</button>
+    <button class="category-btn" data-category="newage"><i class="fas fa-spa"></i> New age</button>
+    
+    <button class="category-btn" data-category="favorites"><i class="fas fa-heart"></i> Preferidos</button>
+</div>
 
         <div class="content-section" id="radio-section" style="display: block;">
              <div class="section-title-container">
@@ -2274,5 +2364,3 @@ function updateDuration() {
 </script>
 </body>
 </html>
-
-
