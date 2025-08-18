@@ -76,9 +76,46 @@
         font-size: 1.5rem; box-shadow: 0 0 20px rgba(0, 188, 212, 0.4);
     }
     .play-btn:hover { background: var(--secondary); color: var(--dark-bg); transform: scale(1.05); }
-    .volume-container { display: flex; align-items: center; gap: 10px; width: 130px; }
-    .volume-slider { -webkit-appearance: none; width: 100%; height: 4px; background: rgba(255, 255, 255, 0.1); border-radius: 2px; cursor: pointer; outline: none; }
-    .volume-slider::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; background: var(--text-white); border-radius: 50%; }
+.volume-container {
+  display: flex;
+  align-items: center;
+  position: relative; /* Importante para o alinhamento */
+}
+.volume-slider {
+  /* Estilo base do slider */
+  -webkit-appearance: none;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 2px;
+  cursor: pointer;
+  outline: none;
+
+  /* --- Animação e estado inicial (escondido) --- */
+  width: 0;
+  opacity: 0;
+  visibility: hidden;
+  margin-left: 0;
+  transition: all 0.4s ease;
+}
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  background: var(--text-white);
+  border-radius: 50%;
+}
+.volume-container.slider-visible .volume-slider {
+  /* ...o slider aparece! */
+  width: 100px; /* Largura desejada para o slider */
+  opacity: 1;
+  visibility: visible;
+  margin-left: 10px; /* Um pequeno espaço entre o ícone e o slider */
+}
+.volume-icon-btn {
+  /* Estilo para o botão do ícone de volume */
+  position: relative;
+  z-index: 2; /* Garante que o ícone fique na frente do slider */
+}
     .equalizer {
         display: flex; align-items: flex-end; height: 30px; gap: 3px; width: 100%; justify-content: center;
         position: absolute; bottom: 20px; left: 0; right: 0; margin: auto;
@@ -244,12 +281,11 @@
         width: 100%;
     }
 
-    .volume-container {
-        /* O controle de volume volta a ser visível! */
-        display: flex;
-        /* Reduzimos sua largura para caber em telas menores */
-        width: 100px; 
-    }
+.volume-container {
+  display: flex;
+  align-items: center;
+  position: relative; /* Importante para o alinhamento */
+}
 
     .controls-center {
         /* Reduzimos ainda mais o espaço entre os botões centrais */
@@ -302,11 +338,12 @@
                         </div>
                         
                         <div class="controls-main">
-                                <div class="volume-container">
-                                    <i class="fas fa-volume-down volume-icon"></i>
-                                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.7">
-                                    <i class="fas fa-volume-up volume-icon"></i>
-                                </div>
+<div class="volume-container" id="volumeContainer">
+    <button class="control-btn volume-icon-btn" id="volumeBtn" aria-label="Controle de volume">
+        <i class="fas fa-volume-high"></i>
+    </button>
+    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.7">
+</div>
                             <div class="controls-center">
                                 <button class="control-btn" id="prevBtn" aria-label="Anterior"><i class="fas fa-step-backward"></i></button>
                                 <button class="control-btn play-btn" id="playBtn" aria-label="Play/Pause"><i class="fas fa-play"></i></button>
@@ -1858,7 +1895,10 @@ radio: [
             const bar = document.createElement('div');
             bar.className = 'eq-bar';
             equalizer.appendChild(bar);
-        }
+    updateVolumeIcon(); // Adicione esta linha no final da função
+    updateNavigableElements();
+    focusElement(0); 
+}
 
         loadFavoritesFromStorage();
         
@@ -2181,9 +2221,10 @@ function updateDuration() {
         audioPlayer.currentTime = (clickX / width) * audioPlayer.duration;
     }
     
-    function setVolume() {
-        audioPlayer.volume = volumeSlider.value;
-    }
+function setVolume() {
+   audioPlayer.volume = volumeSlider.value;
+   updateVolumeIcon(); // Adicione esta linha
+}
 
     function formatTime(seconds) {
         if (isNaN(seconds)) return '0:00';
@@ -2359,8 +2400,54 @@ function updateDuration() {
         }
         focusElement(newIndex);
     }
+// --- LÓGICA PARA O CONTROLE DE VOLUME INTERATIVO ---
+
+// --- LÓGICA APRIMORADA E CORRIGIDA PARA O CONTROLE DE VOLUME ---
+
+const volumeContainer = document.getElementById('volumeContainer');
+const volumeBtn = document.getElementById('volumeBtn');
+// A constante 'volumeSlider' já foi declarada no início do script, então aqui nós apenas a usamos.
+
+// 1. Mostra/esconde o slider ao clicar no ícone de volume
+volumeBtn.addEventListener('click', (event) => {
+  event.stopPropagation();
+  volumeContainer.classList.toggle('slider-visible');
+
+  // Verifica se a barra ficou visível
+  if (volumeContainer.classList.contains('slider-visible')) {
+    // Se sim, move o foco para o slider
+    volumeSlider.focus();
+  }
+});
+
+// 2. Esconde o slider se o usuário clicar em qualquer outro lugar da página
+document.addEventListener('click', (event) => {
+  if (!volumeContainer.contains(event.target)) {
+    volumeContainer.classList.remove('slider-visible');
+  }
+});
+
+// 3. Esconde o slider quando ele perde o foco (ex: ao usar a tecla Tab)
+volumeSlider.addEventListener('blur', () => {
+    volumeContainer.classList.remove('slider-visible');
+});
+function updateVolumeIcon() {
+    const volumeIcon = volumeBtn.querySelector('i');
+    audioPlayer.muted = audioPlayer.volume === 0;
+
+    if (audioPlayer.muted || audioPlayer.volume === 0) {
+        volumeIcon.className = 'fas fa-volume-xmark';
+    } else if (audioPlayer.volume < 0.5) {
+        volumeIcon.className = 'fas fa-volume-low';
+    } else {
+        volumeIcon.className = 'fas fa-volume-high';
+    }
+}
     
     window.playAllGroup = playAllGroup;
 </script>
 </body>
 </html>
+
+
+
