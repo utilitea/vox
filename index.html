@@ -42,18 +42,17 @@
         gap: 20px; padding-bottom: 50px;
     }
     .now-playing {
-        display: flex; /* Ativa o modo Flexbox */
-        align-items: center; /* Alinha tudo verticalmente ao centro */
-        justify-content: space-between; /* Distribui o espaço entre os 3 itens */
-        gap: 15px; /* Mantém um espaçamento mínimo entre os itens */
-      }
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+    }
     .cover-art {
         width: 80px; height: 80px; border-radius: 12px; object-fit: cover;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); transition: transform 0.3s ease;
-        /* EFEITO PULSE ADICIONADO AQUI */
         animation: pulse 2s infinite;
     }
-    .track-info { flex: 1; min-width: 0; }
+    .track-info { flex: 1; min-width: 0; text-align: center; }
     .track-name {
         font-size: 1.25rem; font-weight: 600; color: var(--text-white);
         white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -76,46 +75,23 @@
         font-size: 1.5rem; box-shadow: 0 0 20px rgba(0, 188, 212, 0.4);
     }
     .play-btn:hover { background: var(--secondary); color: var(--dark-bg); transform: scale(1.05); }
-.volume-container {
-  display: flex;
-  align-items: center;
-  position: relative; /* Importante para o alinhamento */
-}
-.volume-slider {
-  /* Estilo base do slider */
-  -webkit-appearance: none;
-  height: 4px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 2px;
-  cursor: pointer;
-  outline: none;
-
-  /* --- Animação e estado inicial (escondido) --- */
-  width: 0;
-  opacity: 0;
-  visibility: hidden;
-  margin-left: 0;
-  transition: all 0.4s ease;
-}
-.volume-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
-  background: var(--text-white);
-  border-radius: 50%;
-}
-.volume-container.slider-visible .volume-slider {
-  /* ...o slider aparece! */
-  width: 100px; /* Largura desejada para o slider */
-  opacity: 1;
-  visibility: visible;
-  margin-left: 10px; /* Um pequeno espaço entre o ícone e o slider */
-}
-.volume-icon-btn {
-  /* Estilo para o botão do ícone de volume */
-  position: relative;
-  z-index: 2; /* Garante que o ícone fique na frente do slider */
-}
+    .volume-container {
+        display: flex; align-items: center; position: relative;
+    }
+    .volume-slider {
+        -webkit-appearance: none; height: 4px; background: rgba(255, 255, 255, 0.1);
+        border-radius: 2px; cursor: pointer; outline: none;
+        width: 0; opacity: 0; visibility: hidden; margin-left: 0;
+        transition: all 0.4s ease;
+    }
+    .volume-slider::-webkit-slider-thumb {
+        -webkit-appearance: none; width: 14px; height: 14px;
+        background: var(--text-white); border-radius: 50%;
+    }
+    .volume-container.slider-visible .volume-slider {
+        width: 100px; opacity: 1; visibility: visible; margin-left: 10px;
+    }
+    .volume-icon-btn { position: relative; z-index: 2; }
     .equalizer {
         display: flex; align-items: flex-end; height: 30px; gap: 3px; width: 100%; justify-content: center;
         position: absolute; bottom: 20px; left: 0; right: 0; margin: auto;
@@ -135,17 +111,10 @@
     .content-section { display: none; animation: fadeIn 0.5s ease; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
     
-    /* DEFINIÇÃO DA ANIMAÇÃO PULSE ADICIONADA AQUI */
     @keyframes pulse {
-        0% {
-            box-shadow: 0 0 0 0 rgba(0, 188, 212, 0.6);
-        }
-        70% {
-            box-shadow: 0 0 0 15px rgba(0, 188, 212, 0);
-        }
-        100% {
-            box-shadow: 0 0 0 0 rgba(0, 188, 212, 0);
-        }
+        0% { box-shadow: 0 0 0 0 rgba(0, 188, 212, 0.6); }
+        70% { box-shadow: 0 0 0 15px rgba(0, 188, 212, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(0, 188, 212, 0); }
     }
     
     .section-title-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; flex-wrap: wrap; gap: 15px; }
@@ -160,23 +129,15 @@
     }
     .play-all-group-btn:hover { background: var(--primary); color: var(--dark-bg); }
 
-/* REGRA UNIFICADA PARA OS CARDS */
-.content-grid {
-  display: grid;
-  gap: 15px; /* Padrão para telas pequenas */
-  
-  /* Celulares (Telas Verticais): 3 colunas */
-  grid-template-columns: repeat(3, 1fr);
-}
+    /* ===== INÍCIO DA CORREÇÃO DE RESPONSIVIDADE ===== */
+    .content-grid {
+        display: grid;
+        gap: 20px;
+        /* Regra 'mágica' que ajusta o número de colunas automaticamente com base no espaço da tela */
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    /* ===== FIM DA CORREÇÃO DE RESPONSIVIDADE ===== */
 
-/* Desktops (Telas Horizontais) */
-@media (min-width: 769px) {
-  .content-grid {
-    /* Muda para 10 colunas em telas maiores */
-    grid-template-columns: repeat(10, 1fr);
-    gap: 25px; /* Espaçamento maior para telas grandes */
-  }
-}
     .content-card {
         background: var(--card-bg); border-radius: 16px; overflow: hidden;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2); transition: all 0.3s ease; cursor: pointer;
@@ -222,8 +183,12 @@
     .back-btn:hover { background: var(--primary); color: var(--dark-bg); }
     *:focus { outline: none; }
     .focused-element { box-shadow: 0 0 0 2px var(--dark-bg), 0 0 0 4px var(--primary), 0 0 20px var(--primary); border-color: var(--primary) !important; transform: scale(1.03); }
+    .content-card.focused-element { z-index: 10; } /* Garante que a sombra não seja cortada */
     .track-item.focused-element { transform: scale(1); }
+    .player-logo-vox img { height: 80px; width: auto; }
+
     @media (min-width: 769px) { .player-wrapper { position: sticky; top: 20px; } }
+
     @media (max-width: 768px) {
         .container { padding: 15px; }
         .player-container { padding: 15px; }
@@ -234,78 +199,19 @@
         .artist-name { font-size: 0.85rem; }
         .equalizer { bottom: 15px; }
     }
-
-/* Adicione estas novas regras */
-.player-logo-vox img {
-  height: 80px; /* Altura da sua logo no player */
-  width: auto;
-}
-
-.track-info {
-  flex-grow: 1; /* Faz o bloco de texto crescer e ocupar o espaço central */
-  text-align: center; /* Centraliza o nome da música e do artista */
-}
-
-/* COLE ESTE BLOCO COMPLETO NO LUGAR DO SEU @media (max-width: 480px) */
-@media (max-width: 480px) {
-    /* Suas regras originais */
-
-    .category-btn {
-        font-size: 0.8rem;
-        padding: 8px 15px;
-    }
-    .section-title {
-        font-size: 1.5rem;
-    }
-    .now-playing {
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 30px;
-    }
-    .track-info {
-        flex-basis: 100%;
-        order: 3;
-        margin-top: 10px;
-    }
-    .player-logo-vox img {
-        height: 50px;
-    }
-
-    /* --- INÍCIO DOS AJUSTES FINAIS NOS CONTROLES DO PLAYER --- */
-
-    .controls-main {
-        display: flex;
-        align-items: center;
-        /* Voltamos a usar space-between para distribuir os 3 grupos */
-        justify-content: space-between;
-        width: 100%;
-    }
-
-.volume-container {
-  display: flex;
-  align-items: center;
-  position: relative; /* Importante para o alinhamento */
-}
-
-    .controls-center {
-        /* Reduzimos ainda mais o espaço entre os botões centrais */
-        gap: 8px;
-    }
-
-    .control-btn {
-        width: 40px;
-        height: 40px;
-        font-size: 1rem;
-    }
-
-    .play-btn {
-        width: 48px;
-        height: 48px;
-        font-size: 1.3rem;
-    }
     
-    /* A regra de 'order' para o botão stop não é mais necessária */
-}
+    @media (max-width: 480px) {
+        .category-btn { font-size: 0.8rem; padding: 8px 15px; }
+        .section-title { font-size: 1.5rem; }
+        .now-playing { flex-wrap: wrap; justify-content: center; gap: 15px; }
+        .track-info { flex-basis: 100%; order: 3; margin-top: 10px; }
+        .player-logo-vox img { height: 50px; }
+        .controls-main { justify-content: space-between; width: 100%; }
+        .controls-center { gap: 8px; }
+        .control-btn { width: 40px; height: 40px; font-size: 1rem; }
+        .play-btn { width: 48px; height: 48px; font-size: 1.3rem; }
+    }
+
 </style>
 </head>
 <body>
@@ -314,19 +220,16 @@
         <div class="player-wrapper">
             <div class="player-container">
                 <div class="player-content">
-
-<div class="now-playing">
-    <div class="player-logo-vox">
-        <img src="https://utilitea.github.io/vox/vox4.png" alt="Logo Vox">
-    </div>
-
-    <div class="track-info">
-        <div class="track-name" id="trackName">Selecione uma música</div>
-        <div class="artist-name" id="artistName">Bem-vindo ao Vox</div>
-    </div>
-
-    <img src="https://utilitea.github.io/vox/vox5.png" alt="Capa" class="cover-art" id="coverArt">
-</div>
+                    <div class="now-playing">
+                        <div class="player-logo-vox">
+                            <img src="https://utilitea.github.io/vox/vox4.png" alt="Logo Vox">
+                        </div>
+                        <div class="track-info">
+                            <div class="track-name" id="trackName">Selecione uma música</div>
+                            <div class="artist-name" id="artistName">Bem-vindo ao Vox</div>
+                        </div>
+                        <img src="https://utilitea.github.io/vox/vox5.png" alt="Capa" class="cover-art" id="coverArt">
+                    </div>
 
                     <div class="player-controls">
                         <div class="progress-container" id="progressContainer">
@@ -338,12 +241,12 @@
                         </div>
                         
                         <div class="controls-main">
-<div class="volume-container" id="volumeContainer">
-    <button class="control-btn volume-icon-btn" id="volumeBtn" aria-label="Controle de volume">
-        <i class="fas fa-volume-high"></i>
-    </button>
-    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.7">
-</div>
+                            <div class="volume-container" id="volumeContainer">
+                                <button class="control-btn volume-icon-btn" id="volumeBtn" aria-label="Controle de volume">
+                                    <i class="fas fa-volume-high"></i>
+                                </button>
+                                <input type="range" class="volume-slider" id="volumeSlider" min="0" max="1" step="0.01" value="0.7">
+                            </div>
                             <div class="controls-center">
                                 <button class="control-btn" id="prevBtn" aria-label="Anterior"><i class="fas fa-step-backward"></i></button>
                                 <button class="control-btn play-btn" id="playBtn" aria-label="Play/Pause"><i class="fas fa-play"></i></button>
@@ -353,34 +256,31 @@
                         </div>
                     </div>
                 </div>
-                <div class="equalizer" id="equalizer">
-                </div>
+                <div class="equalizer" id="equalizer"></div>
             </div>
         </div>
 
-<div class="category-buttons">
-    <button class="category-btn active" data-category="radio"><i class="fas fa-broadcast-tower"></i> Rádio</button>
-    <button class="category-btn" data-category="national"><i class="fas fa-flag"></i> Nacional</button>
-    <button class="category-btn" data-category="foreign"><i class="fas fa-globe"></i> Estrangeiro</button>
-    
-    <button class="category-btn" data-category="religious"><i class="fas fa-dove"></i> Religioso</button>
-    <button class="category-btn" data-category="classical"><i class="fas fa-music"></i> Classico</button>
-    <button class="category-btn" data-category="newage"><i class="fas fa-spa"></i> New age</button>
-    
-    <button class="category-btn" data-category="favorites"><i class="fas fa-heart"></i> Preferidos</button>
-</div>
+        <div class="category-buttons">
+            <button class="category-btn active" data-category="radio"><i class="fas fa-broadcast-tower"></i> Rádio</button>
+            <button class="category-btn" data-category="national"><i class="fas fa-flag"></i> Nacional</button>
+            <button class="category-btn" data-category="foreign"><i class="fas fa-globe"></i> Estrangeiro</button>
+            <button class="category-btn" data-category="religious"><i class="fas fa-dove"></i> Religioso</button>
+            <button class="category-btn" data-category="classical"><i class="fas fa-music"></i> Classico</button>
+            <button class="category-btn" data-category="newage"><i class="fas fa-spa"></i> New age</button>
+            <button class="category-btn" data-category="favorites"><i class="fas fa-heart"></i> Preferidos</button>
+        </div>
 
         <div class="content-section" id="radio-section" style="display: block;">
-             <div class="section-title-container">
+            <div class="section-title-container">
                 <h2 class="section-title"><i class="fas fa-broadcast-tower"></i> Rádios</h2>
-             </div>
+            </div>
             <div class="content-grid" id="radio-grid"></div>
         </div>
 
         <div class="content-section" id="national-section">
             <div class="section-title-container">
-                 <h2 class="section-title"><i class="fas fa-flag"></i> Nacional</h2>
-                 <button class="play-all-group-btn" onclick="playAllGroup('national')"><i class="fas fa-play"></i> Tocar Todas</button>
+                <h2 class="section-title"><i class="fas fa-flag"></i> Nacional</h2>
+                <button class="play-all-group-btn" onclick="playAllGroup('national')"><i class="fas fa-play"></i> Tocar Todas</button>
             </div>
             <div class="content-grid" id="national-grid"></div>
             <div class="tracks-list" id="national-tracks"></div>
@@ -397,7 +297,7 @@
 
         <div class="content-section" id="religious-section">
             <div class="section-title-container">
-                <h2 class="section-title"><i class="fas fa-globe"></i> Religioso</h2>
+                <h2 class="section-title"><i class="fas fa-dove"></i> Religioso</h2>
                 <button class="play-all-group-btn" onclick="playAllGroup('religious')"><i class="fas fa-play"></i> Tocar Todas</button>
             </div>
             <div class="content-grid" id="religious-grid"></div>
@@ -406,7 +306,7 @@
 
         <div class="content-section" id="classical-section">
             <div class="section-title-container">
-                <h2 class="section-title"><i class="fas fa-globe"></i> Classico</h2>
+                <h2 class="section-title"><i class="fas fa-music"></i> Classico</h2>
                 <button class="play-all-group-btn" onclick="playAllGroup('classical')"><i class="fas fa-play"></i> Tocar Todas</button>
             </div>
             <div class="content-grid" id="classical-grid"></div>
@@ -415,7 +315,7 @@
 
         <div class="content-section" id="newage-section">
             <div class="section-title-container">
-                <h2 class="section-title"><i class="fas fa-globe"></i> New age</h2>
+                <h2 class="section-title"><i class="fas fa-spa"></i> New age</h2>
                 <button class="play-all-group-btn" onclick="playAllGroup('newage')"><i class="fas fa-play"></i> Tocar Todas</button>
             </div>
             <div class="content-grid" id="newage-grid"></div>
@@ -423,10 +323,10 @@
         </div>
 
         <div class="content-section" id="favorites-section">
-             <div class="section-title-container">
+            <div class="section-title-container">
                 <h2 class="section-title"><i class="fas fa-heart"></i> Preferidos</h2>
-                 <button class="play-all-group-btn" onclick="playAllGroup('favorites')"><i class="fas fa-play"></i> Tocar Todas</button>
-             </div>
+                <button class="play-all-group-btn" onclick="playAllGroup('favorites')"><i class="fas fa-play"></i> Tocar Todas</button>
+            </div>
             <div class="content-grid" id="favorites-grid"></div>
             <div class="tracks-list" id="favorites-tracks"></div>
         </div>
@@ -435,8 +335,10 @@
     <audio id="audioPlayer" preload="metadata"></audio>
 
 <script>
-    // SEU JAVASCRIPT PERMANECE EXATAMENTE O MESMO
-    const audioData = {
+    // A sua lista de músicas (audioData) permanece exatamente a mesma.
+    // Para economizar espaço, ela foi omitida aqui, mas deve ser inserida neste local.
+    const audioData = { 
+
 radio: [
             {
                 name: "80s",
@@ -1861,7 +1763,8 @@ radio: [
             }
         ],
         favorites: []
-    };
+        };
+
     const audioPlayer = document.getElementById('audioPlayer');
     const playBtn = document.getElementById('playBtn');
     const prevBtn = document.getElementById('prevBtn');
@@ -1895,11 +1798,8 @@ radio: [
             const bar = document.createElement('div');
             bar.className = 'eq-bar';
             equalizer.appendChild(bar);
-    updateVolumeIcon(); // Adicione esta linha no final da função
-    updateNavigableElements();
-    focusElement(0); 
-}
-
+        }
+        
         loadFavoritesFromStorage();
         
         loadRadioStations();
@@ -1912,8 +1812,13 @@ radio: [
 
         setupEventListeners();
         
-        updateNavigableElements();
-        focusElement(0); 
+        updateVolumeIcon(); 
+        
+        // Timeout para garantir que a página renderizou antes de navegar
+        setTimeout(() => {
+            updateNavigableElements();
+            focusElement(0);
+        }, 100);
     }
     
     function setupEventListeners() {
@@ -1930,8 +1835,8 @@ radio: [
         audioPlayer.addEventListener('play', startEqualizer);
         audioPlayer.addEventListener('pause', stopEqualizer);
         audioPlayer.addEventListener('error', () => {
-             console.error("Erro ao carregar o áudio.");
-             nextTrack();
+            console.error("Erro ao carregar o áudio.");
+            nextTrack();
         });
 
         document.querySelectorAll('.category-btn').forEach(btn => {
@@ -1945,6 +1850,25 @@ radio: [
         });
         
         document.addEventListener('keydown', handleKeyDown);
+
+        // Lógica do slider de volume
+        const volumeContainer = document.getElementById('volumeContainer');
+        const volumeBtn = document.getElementById('volumeBtn');
+        volumeBtn.addEventListener('click', (event) => {
+            event.stopPropagation();
+            volumeContainer.classList.toggle('slider-visible');
+            if (volumeContainer.classList.contains('slider-visible')) {
+                volumeSlider.focus();
+            }
+        });
+        document.addEventListener('click', (event) => {
+            if (!volumeContainer.contains(event.target)) {
+                volumeContainer.classList.remove('slider-visible');
+            }
+        });
+        volumeSlider.addEventListener('blur', () => {
+            volumeContainer.classList.remove('slider-visible');
+        });
     }
     
     function loadRadioStations() {
@@ -2068,8 +1992,9 @@ radio: [
         
         setTimeout(() => {
             updateNavigableElements();
-            focusElement(0);
-        }, 50); 
+            const backButtonIndex = navigableElements.findIndex(el => el.classList.contains('back-btn'));
+            focusElement(backButtonIndex !== -1 ? backButtonIndex : 0);
+        }, 50);
     }
 
     function backToArtists(category) {
@@ -2086,8 +2011,9 @@ radio: [
 
         setTimeout(() => {
             updateNavigableElements();
-            const activeCategoryBtnIndex = [...document.querySelectorAll('.category-btn')].findIndex(btn => btn.dataset.category === category);
-            focusElement(activeCategoryBtnIndex);
+            const lastFocusedCard = navigableElements.find(el => el.dataset.category === category && el.dataset.artist === currentArtist);
+            const indexToFocus = lastFocusedCard ? navigableElements.indexOf(lastFocusedCard) : navigableElements.findIndex(el => el.classList.contains('category-btn') && el.classList.contains('active'));
+            focusElement(indexToFocus > -1 ? indexToFocus : 0);
         }, 50);
     }
     
@@ -2107,8 +2033,8 @@ radio: [
         highlightPlayingTrack();
     }
     
-function playRadio(station) {
-        currentPlaylist = audioData.radio;
+    function playRadio(station) {
+        currentPlaylist = audioData.radio.map(r => ({ ...r, name: r.name, artist: 'Rádio Online' }));
         currentTrackIndex = audioData.radio.findIndex(r => r.url === station.url);
         currentCategory = 'radio';
 
@@ -2119,7 +2045,6 @@ function playRadio(station) {
         document.getElementById('progressContainer').style.display = 'none';
         document.getElementById('time-info').style.display = 'none';
         
-        // Linhas adicionadas para garantir que o tempo seja limpo
         currentTimeEl.textContent = ""; 
         durationEl.textContent = "Ao Vivo";
 
@@ -2182,13 +2107,13 @@ function playRadio(station) {
     function nextTrack() {
         if (currentPlaylist.length === 0) return;
         currentTrackIndex = (currentTrackIndex + 1) % currentPlaylist.length;
-        currentPlaylist[0].url.includes('streeemer') ? playRadio(currentPlaylist[currentTrackIndex]) : playTrackFromPlaylist();
+        playTrackFromPlaylist();
     }
 
     function prevTrack() {
         if (currentPlaylist.length === 0) return;
         currentTrackIndex = (currentTrackIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
-        currentPlaylist[0].url.includes('streeemer') ? playRadio(currentPlaylist[currentTrackIndex]) : playTrackFromPlaylist();
+        playTrackFromPlaylist();
     }
 
     function updatePlayerUI(title, subtitle, image) {
@@ -2198,33 +2123,45 @@ function playRadio(station) {
     }
 
     function updateProgress() {
-        if (isNaN(audioPlayer.duration)) return;
+        if (isNaN(audioPlayer.duration) || !isFinite(audioPlayer.duration)) return;
         const { currentTime, duration } = audioPlayer;
         const progressPercent = (currentTime / duration) * 100;
         progressBar.style.width = `${progressPercent}%`;
         currentTimeEl.textContent = formatTime(currentTime);
     }
     
-function updateDuration() {
-        // Verifica se a duração é um número finito antes de formatar
+    function updateDuration() {
         if (isFinite(audioPlayer.duration)) {
             durationEl.textContent = formatTime(audioPlayer.duration);
         } else {
-            durationEl.textContent = "Ao Vivo"; // Mostra "Ao Vivo" para rádios/streams
+            durationEl.textContent = "Ao Vivo";
         }
     }
 
     function setProgress(e) {
-        if (isNaN(audioPlayer.duration)) return;
+        if (isNaN(audioPlayer.duration) || !isFinite(audioPlayer.duration)) return;
         const width = this.clientWidth;
         const clickX = e.offsetX;
         audioPlayer.currentTime = (clickX / width) * audioPlayer.duration;
     }
     
-function setVolume() {
-   audioPlayer.volume = volumeSlider.value;
-   updateVolumeIcon(); // Adicione esta linha
-}
+    function setVolume() {
+        audioPlayer.volume = volumeSlider.value;
+        updateVolumeIcon();
+    }
+
+    function updateVolumeIcon() {
+        const volumeIcon = document.querySelector('#volumeBtn i');
+        audioPlayer.muted = audioPlayer.volume === 0;
+
+        if (audioPlayer.muted || audioPlayer.volume === 0) {
+            volumeIcon.className = 'fas fa-volume-xmark';
+        } else if (audioPlayer.volume < 0.5) {
+            volumeIcon.className = 'fas fa-volume-low';
+        } else {
+            volumeIcon.className = 'fas fa-volume-high';
+        }
+    }
 
     function formatTime(seconds) {
         if (isNaN(seconds)) return '0:00';
@@ -2253,8 +2190,9 @@ function setVolume() {
 
     function highlightPlayingTrack() {
         clearPlayingHighlight();
-        if (currentCategory !== 'radio' && currentArtist) {
-            const trackItem = document.querySelector(`.track-item[data-artist="${currentArtist}"][data-track-index="${currentTrackIndex}"]`);
+        if (currentCategory !== 'radio' && currentPlaylist.length > 0) {
+            const trackData = currentPlaylist[currentTrackIndex];
+            const trackItem = document.querySelector(`.track-item[data-artist="${trackData.artist}"][data-track-index="${currentTrackIndex}"]`);
             if (trackItem) {
                 trackItem.classList.add('playing');
                 currentlyPlayingTrackElement = trackItem;
@@ -2292,9 +2230,7 @@ function setVolume() {
 
     function loadFavoritesFromStorage() {
         const stored = localStorage.getItem('Vox_favorites');
-        if (stored) {
-            audioData.favorites = JSON.parse(stored);
-        }
+        if (stored) audioData.favorites = JSON.parse(stored);
     }
     function saveFavorites() {
         localStorage.setItem('Vox_favorites', JSON.stringify(audioData.favorites));
@@ -2318,9 +2254,9 @@ function setVolume() {
     function updateNavigableElements() {
         navigableElements = Array.from(
             document.querySelectorAll(
-                '.category-btn, .player-controls .control-btn, .section-title-container .play-all-group-btn, .content-grid .content-card, .tracks-list .back-btn, .tracks-list .track-item'
+                '.control-btn, .category-btn, .play-all-group-btn, .content-card, .back-btn, .track-item'
             )
-        ).filter(el => el.offsetParent !== null); 
+        ).filter(el => el.offsetParent !== null); // Apenas elementos visíveis
     }
 
     function focusElement(index) {
@@ -2335,126 +2271,108 @@ function setVolume() {
             el.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
         }
     }
-    
+
+    // ===== INÍCIO DA NOVA LÓGICA DE NAVEGAÇÃO =====
+    function getBestCandidate(direction, currentRect, elements, currentIndex) {
+        let bestCandidateIndex = -1;
+        let minDistance = Infinity;
+
+        const currentCenterX = currentRect.left + currentRect.width / 2;
+        const currentCenterY = currentRect.top + currentRect.height / 2;
+
+        elements.forEach((candidate, index) => {
+            if (index === currentIndex) return;
+
+            const candidateRect = candidate.getBoundingClientRect();
+            const candidateCenterX = candidateRect.left + candidateRect.width / 2;
+            const candidateCenterY = candidateRect.top + candidateRect.height / 2;
+
+            let distance = Infinity;
+            let isCandidate = false;
+
+            switch (direction) {
+                case 'ArrowDown':
+                    if (candidateCenterY > currentCenterY) {
+                        isCandidate = true;
+                        const vDist = candidateRect.top - currentRect.bottom;
+                        const hDist = Math.abs(candidateCenterX - currentCenterX);
+                        distance = vDist + hDist * 3; // Prioriza alinhamento vertical
+                    }
+                    break;
+                case 'ArrowUp':
+                    if (candidateCenterY < currentCenterY) {
+                        isCandidate = true;
+                        const vDist = currentRect.top - candidateRect.bottom;
+                        const hDist = Math.abs(candidateCenterX - currentCenterX);
+                        distance = vDist + hDist * 3;
+                    }
+                    break;
+                case 'ArrowRight':
+                    if (candidateCenterX > currentCenterX) {
+                         isCandidate = true;
+                         const hDist = candidateRect.left - currentRect.right;
+                         const vDist = Math.abs(candidateCenterY - currentCenterY);
+                         distance = hDist + vDist * 3; // Prioriza alinhamento horizontal
+                    }
+                    break;
+                case 'ArrowLeft':
+                    if (candidateCenterX < currentCenterX) {
+                        isCandidate = true;
+                        const hDist = currentRect.left - candidateRect.right;
+                        const vDist = Math.abs(candidateCenterY - currentCenterY);
+                        distance = hDist + vDist * 3;
+                    }
+                    break;
+            }
+
+            if (isCandidate && distance >= 0 && distance < minDistance) {
+                minDistance = distance;
+                bestCandidateIndex = index;
+            }
+        });
+
+        return bestCandidateIndex;
+    }
+
     function handleKeyDown(e) {
         if (document.activeElement.tagName === 'INPUT') return;
 
-        updateNavigableElements();
-        if (navigableElements.length === 0) return;
-        
+        const arrowKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
         let newIndex = focusedIndex;
 
-        switch (e.key) {
-            case 'ArrowDown':
-                e.preventDefault();
-                const currentRect = focusedIndex > -1 ? navigableElements[focusedIndex].getBoundingClientRect() : {x:0, y:0, width: 0};
-                let bestCandidate = -1;
-                let minDistance = Infinity;
+        if (arrowKeys.includes(e.key)) {
+            e.preventDefault();
+            updateNavigableElements();
+            if (navigableElements.length === 0 || focusedIndex < 0) return;
 
-                for(let i=0; i<navigableElements.length; i++){
-                    if(i === focusedIndex) continue;
-                    const nextRect = navigableElements[i].getBoundingClientRect();
-                    if(nextRect.top > currentRect.y + 10){ 
-                         const verticalDist = nextRect.top - currentRect.y;
-                         const horizontalDist = Math.abs((nextRect.x + nextRect.width/2) - (currentRect.x + currentRect.width/2));
-                         const distance = verticalDist + horizontalDist * 2; 
-                         if(distance < minDistance){
-                             minDistance = distance;
-                             bestCandidate = i;
-                         }
-                    }
-                }
-                newIndex = bestCandidate !== -1 ? bestCandidate : (focusedIndex + 1) % navigableElements.length;
-                break;
+            const currentElementRect = navigableElements[focusedIndex].getBoundingClientRect();
+            const bestCandidate = getBestCandidate(e.key, currentElementRect, navigableElements, focusedIndex);
 
-            case 'ArrowUp':
-                e.preventDefault();
-                newIndex = (focusedIndex - 1 + navigableElements.length) % navigableElements.length;
-                break;
-        case 'ArrowRight':
-            // SÓ executa a navegação se o foco NÃO estiver no slider de volume
-            if (document.activeElement !== volumeSlider) {
-                e.preventDefault();
-                newIndex = (focusedIndex + 1) % navigableElements.length;
+            if (bestCandidate !== -1) {
+                newIndex = bestCandidate;
             }
-            break;
-        case 'ArrowLeft':
-            // SÓ executa a navegação se o foco NÃO estiver no slider de volume
-            if (document.activeElement !== volumeSlider) {
-                e.preventDefault();
-                newIndex = (focusedIndex - 1 + navigableElements.length) % navigableElements.length;
+        } else if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            if (focusedIndex !== -1) {
+                navigableElements[focusedIndex].click();
             }
-            break;
-            case 'Enter':
-                e.preventDefault();
-                if (focusedIndex !== -1) {
-                    navigableElements[focusedIndex].click();
-                }
-                break;
-            case 'Backspace':
-                e.preventDefault();
-                 const visibleTracksList = document.querySelector('.tracks-list[style*="display: block"]');
-                 if (visibleTracksList) {
-                     const backBtn = visibleTracksList.querySelector('.back-btn');
-                     if (backBtn) {
-                         backBtn.click();
-                     }
-                 }
-                break;
-            default:
-                return; 
+        } else if (e.key === 'Backspace') {
+            e.preventDefault();
+            const visibleTracksList = document.querySelector('.tracks-list[style*="display: block"]');
+            if (visibleTracksList) {
+                const backBtn = visibleTracksList.querySelector('.back-btn');
+                if (backBtn) backBtn.click();
+            }
         }
-        focusElement(newIndex);
+
+        if (newIndex !== focusedIndex) {
+            focusElement(newIndex);
+        }
     }
-// --- LÓGICA PARA O CONTROLE DE VOLUME INTERATIVO ---
-
-// --- LÓGICA APRIMORADA E CORRIGIDA PARA O CONTROLE DE VOLUME ---
-
-const volumeContainer = document.getElementById('volumeContainer');
-const volumeBtn = document.getElementById('volumeBtn');
-// A constante 'volumeSlider' já foi declarada no início do script, então aqui nós apenas a usamos.
-
-// 1. Mostra/esconde o slider ao clicar no ícone de volume
-volumeBtn.addEventListener('click', (event) => {
-  event.stopPropagation();
-  volumeContainer.classList.toggle('slider-visible');
-
-  // Verifica se a barra ficou visível
-  if (volumeContainer.classList.contains('slider-visible')) {
-    // Se sim, move o foco para o slider
-    volumeSlider.focus();
-  }
-});
-
-// 2. Esconde o slider se o usuário clicar em qualquer outro lugar da página
-document.addEventListener('click', (event) => {
-  if (!volumeContainer.contains(event.target)) {
-    volumeContainer.classList.remove('slider-visible');
-  }
-});
-
-// 3. Esconde o slider quando ele perde o foco (ex: ao usar a tecla Tab)
-volumeSlider.addEventListener('blur', () => {
-    volumeContainer.classList.remove('slider-visible');
-});
-function updateVolumeIcon() {
-    const volumeIcon = volumeBtn.querySelector('i');
-    audioPlayer.muted = audioPlayer.volume === 0;
-
-    if (audioPlayer.muted || audioPlayer.volume === 0) {
-        volumeIcon.className = 'fas fa-volume-xmark';
-    } else if (audioPlayer.volume < 0.5) {
-        volumeIcon.className = 'fas fa-volume-low';
-    } else {
-        volumeIcon.className = 'fas fa-volume-high';
-    }
-}
+    // ===== FIM DA NOVA LÓGICA DE NAVEGAÇÃO =====
     
     window.playAllGroup = playAllGroup;
 </script>
+
 </body>
 </html>
-
-
-
-
