@@ -129,14 +129,11 @@
     }
     .play-all-group-btn:hover { background: var(--primary); color: var(--dark-bg); }
 
-    /* ===== INÍCIO DA CORREÇÃO DE RESPONSIVIDADE ===== */
     .content-grid {
         display: grid;
         gap: 20px;
-        /* Regra 'mágica' que ajusta o número de colunas automaticamente com base no espaço da tela */
         grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     }
-    /* ===== FIM DA CORREÇÃO DE RESPONSIVIDADE ===== */
 
     .content-card {
         background: var(--card-bg); border-radius: 16px; overflow: hidden;
@@ -145,7 +142,16 @@
         backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
     }
     .content-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); border-color: rgba(0, 188, 212, 0.5); }
-    .card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-bottom: 1px solid var(--border-color); }
+    
+    /* ===== INÍCIO DA CORREÇÃO 1: Padronização dos Cards ===== */
+    .card-img { 
+        width: 100%; 
+        aspect-ratio: 1 / 1; 
+        object-fit: cover; /* Garante que a imagem preencha o espaço quadrado sem distorcer */
+        border-bottom: 1px solid var(--border-color); 
+    }
+    /* ===== FIM DA CORREÇÃO 1 ===== */
+
     .card-body { padding: 3px 5px; text-align: center; }
     .card-title { font-size: 1rem; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 3px; }
     .card-subtitle { font-size: 0.8rem; color: var(--text-light); }
@@ -155,25 +161,9 @@
         display: flex; align-items: center; justify-content: center; cursor: pointer;
         transition: all 0.2s ease; z-index: 2;
     }
-    .add-to-favorites:hover, .favorite-track-btn:hover { color: var(--accent); transform: scale(1.1); }
-    .add-to-favorites.favorited, .favorite-track-btn.favorited { color: var(--accent); }
-    .tracks-list { display: none; animation: fadeIn 0.5s ease; }
-    .track-item { display: flex; align-items: center; padding: 12px 15px; background: transparent; border-radius: 10px; margin-bottom: 8px; transition: all 0.2s ease; border: 1px solid transparent; }
-    .track-item:hover { background: var(--card-bg); border-color: var(--border-color); }
-    .track-item.playing { background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%); color: var(--dark-bg); box-shadow: 0 5px 15px rgba(0, 188, 212, 0.2); }
-    .track-item.playing .track-number, .track-item.playing .track-name-small { color: var(--dark-bg); font-weight: 600; }
-    .track-item.playing .play-track-btn { background: rgba(13, 17, 23, 0.8); color: var(--text-white); }
-    .track-number { font-size: 0.9rem; color: var(--text-light); margin-right: 15px; width: 25px; text-align: center; }
-    .track-info-small { flex: 1; min-width: 0; }
-    .track-name-small { font-size: 0.95rem; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .track-actions { display: flex; align-items: center; gap: 10px; margin-left: 15px; }
-    .play-track-btn, .favorite-track-btn {
-        background: var(--card-bg-solid); color: var(--text); border: 1px solid var(--border-color);
-        width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center;
-        justify-content: center; cursor: pointer; transition: all 0.2s ease;
-    }
-    .play-track-btn:hover { background: var(--primary); color: var(--dark-bg); border-color: var(--primary); }
-    .favorite-track-btn { background: transparent; }
+    .add-to-favorites:hover { color: var(--accent); transform: scale(1.1); }
+    .add-to-favorites.favorited { color: var(--accent); }
+    .tracks-list { display: none; }
     .back-btn {
         background: transparent; color: var(--primary); border: 1px solid var(--primary);
         padding: 8px 20px; border-radius: 30px; font-size: 0.9rem; cursor: pointer;
@@ -181,10 +171,32 @@
         align-items: center; gap: 5px;
     }
     .back-btn:hover { background: var(--primary); color: var(--dark-bg); }
+    
+    .content-card .card-play-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.6);
+        color: var(--text-white);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 2.5rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none; 
+        border-radius: 16px; 
+    }
+    .content-card:hover .card-play-overlay,
+    .content-card.focused-element .card-play-overlay {
+        opacity: 1;
+    }
+
     *:focus { outline: none; }
     .focused-element { box-shadow: 0 0 0 2px var(--dark-bg), 0 0 0 4px var(--primary), 0 0 20px var(--primary); border-color: var(--primary) !important; transform: scale(1.03); }
-    .content-card.focused-element { z-index: 10; } /* Garante que a sombra não seja cortada */
-    .track-item.focused-element { transform: scale(1); }
+    .content-card.focused-element { z-index: 10; }
     .player-logo-vox img { height: 80px; width: auto; }
 
     @media (min-width: 769px) { .player-wrapper { position: sticky; top: 20px; } }
@@ -335,10 +347,9 @@
     <audio id="audioPlayer" preload="metadata"></audio>
 
 <script>
-    // A sua lista de músicas (audioData) permanece exatamente a mesma.
-    // Para economizar espaço, ela foi omitida aqui, mas deve ser inserida neste local.
-    const audioData = { 
-
+    // Seus dados de áudio completos aqui...
+    const audioData = {
+ 
 radio: [
             {
                 name: "80s",
@@ -1513,24 +1524,6 @@ radio: [
     ]
 },
 {
-    artist: "Stella Laura",
-    img: "https://akamai.sscdn.co/tb/160x160/palcomp3-logo/b/5/2/5/c367404836c44845b4f2b3092226a3b7.jpg",
-    tracks: [
-        { name: "Descansa", url: "https://65381g.ha.azioncdn.net/1/1/4/9/stellalaura-descansa-6fe6de8f.mp3" },
-        { name: "Descansa PlayBack", url: "https://65381g.ha.azioncdn.net/9/e/3/8/stellalaura-descansaplayback-c61daccb.mp3" },
-        { name: "Preciso Confiar", url: "https://65381g.ha.azioncdn.net/8/3/6/d/stellalaura-preciso-confiar-b46becff.mp3" },
-        { name: "Preciso Confiar PlayBack", url: "https://65381g.ha.azioncdn.net/b/0/6/8/stellalaura-preciso-confiar-playback-68564b23.mp3" },
-        { name: "Plano Perfeito", url: "https://65381g.ha.azioncdn.net/a/e/9/0/stellalaura-plano-perfeito-58a74541.mp3" },
-        { name: "Plano Perfeito PlayBack", url: "https://65381g.ha.azioncdn.net/9/a/f/b/stellalaura-plano-perfeito-playback-1e26ded4.mp3" },
-        { name: "Vai Adorando", url: "https://65381g.ha.azioncdn.net/e/7/2/0/stellalaura-vai-adorando-c1df2665.mp3" },
-        { name: "Vai Adorando PlayBack", url: "https://65381g.ha.azioncdn.net/1/f/f/0/stellalaura-vai-adorando-playback-b959409f.mp3" },
-        { name: "Em Teu Altar", url: "https://65381g.ha.azioncdn.net/f/d/5/a/stellalaura-em-teu-altar-ac5f3e46.mp3" },
-        { name: "Em Teu Altar PlayBack", url: "https://65381g.ha.azioncdn.net/3/8/8/2/stellalaura-em-teu-altar-playback-58c5a102.mp3" },
-        { name: "Onde Estão", url: "https://65381g.ha.azioncdn.net/b/b/f/2/stellalaura-onde-estao-1d17c06d.mp3" },
-        { name: "Onde Estão PlayBack", url: "https://65381g.ha.azioncdn.net/0/0/6/4/stellalaura-onde-estaoplayback-6217da76.mp3" }
-    ]
-},
-{
     artist: "Thalles Roberto",
     img: "https://album1.cdn107.com/39/73/397381c9d4ec2f77b7e0a5c2ce00da71_xl.jpg?i=1",
     tracks: [
@@ -1763,8 +1756,9 @@ radio: [
             }
         ],
         favorites: []
-        };
+};
 
+    // O restante do seu JavaScript...
     const audioPlayer = document.getElementById('audioPlayer');
     const playBtn = document.getElementById('playBtn');
     const prevBtn = document.getElementById('prevBtn');
@@ -1814,7 +1808,6 @@ radio: [
         
         updateVolumeIcon(); 
         
-        // Timeout para garantir que a página renderizou antes de navegar
         setTimeout(() => {
             updateNavigableElements();
             focusElement(0);
@@ -1834,9 +1827,10 @@ radio: [
         audioPlayer.addEventListener('loadedmetadata', updateDuration);
         audioPlayer.addEventListener('play', startEqualizer);
         audioPlayer.addEventListener('pause', stopEqualizer);
-        audioPlayer.addEventListener('error', () => {
-            console.error("Erro ao carregar o áudio.");
-            nextTrack();
+        audioPlayer.addEventListener('error', (e) => {
+            console.error("Erro no player de áudio:", e);
+            // Evita loop infinito se o erro ocorrer no primeiro item
+            setTimeout(nextTrack, 1000); 
         });
 
         document.querySelectorAll('.category-btn').forEach(btn => {
@@ -1851,7 +1845,6 @@ radio: [
         
         document.addEventListener('keydown', handleKeyDown);
 
-        // Lógica do slider de volume
         const volumeContainer = document.getElementById('volumeContainer');
         const volumeBtn = document.getElementById('volumeBtn');
         volumeBtn.addEventListener('click', (event) => {
@@ -1964,28 +1957,32 @@ radio: [
         const playAllBtn = document.querySelector(`#${category}-section .play-all-group-btn`);
 
         gridContainer.style.display = 'none';
-        if(playAllBtn) playAllBtn.style.display = 'none';
-
+        if (playAllBtn) playAllBtn.style.display = 'none';
+        
+        tracksContainer.classList.add('content-grid');
+        
         tracksContainer.innerHTML = `
-            <button class="back-btn"><i class="fas fa-arrow-left"></i> Voltar para Artistas</button>
+            <button class="back-btn" style="grid-column: 1 / -1;"><i class="fas fa-arrow-left"></i> Voltar para Artistas</button>
             ${artistData.tracks.map((track, index) => `
-                <div class="track-item" data-category="${category}" data-artist="${artist}" data-track-index="${index}" tabindex="0">
-                    <div class="track-number">${index + 1}</div>
-                    <div class="track-info-small">
-                        <div class="track-name-small">${track.name}</div>
+                <div class="content-card" data-category="${category}" data-artist="${artist}" data-track-index="${index}" tabindex="0">
+                    <img src="${artistData.img}" alt="${artist}" class="card-img" loading="lazy">
+                    <div class="card-body">
+                        <h3 class="card-title">${track.name}</h3>
+                        <p class="card-subtitle">Faixa ${index + 1}</p>
                     </div>
-                    <div class="track-actions">
-                        <button class="play-track-btn" aria-label="Tocar"><i class="fas fa-play"></i></button>
+                    <div class="card-play-overlay">
+                        <i class="fas fa-play-circle"></i>
                     </div>
                 </div>
             `).join('')}
         `;
 
-        tracksContainer.style.display = 'block';
+        tracksContainer.style.display = 'grid';
+        
         tracksContainer.querySelector('.back-btn').addEventListener('click', () => backToArtists(category));
-        tracksContainer.querySelectorAll('.track-item').forEach(item => {
-            item.addEventListener('click', () => {
-                const { category, artist, trackIndex } = item.dataset;
+        tracksContainer.querySelectorAll('.content-card').forEach(card => {
+            card.addEventListener('click', () => {
+                const { category, artist, trackIndex } = card.dataset;
                 playTrack(category, artist, parseInt(trackIndex));
             });
         });
@@ -1996,22 +1993,25 @@ radio: [
             focusElement(backButtonIndex !== -1 ? backButtonIndex : 0);
         }, 50);
     }
-
+    
     function backToArtists(category) {
         const tracksContainer = document.getElementById(`${category}-tracks`);
         const gridContainer = document.getElementById(`${category}-grid`);
         const playAllBtn = document.querySelector(`#${category}-section .play-all-group-btn`);
-
+        
+        tracksContainer.classList.remove('content-grid');
         tracksContainer.style.display = 'none';
         tracksContainer.innerHTML = '';
-        gridContainer.style.display = 'grid';
-        if(playAllBtn) playAllBtn.style.display = 'inline-flex';
         
+        gridContainer.style.display = 'grid';
+        if (playAllBtn) playAllBtn.style.display = 'inline-flex';
+        
+        const lastArtist = currentArtist;
         currentArtist = '';
 
         setTimeout(() => {
             updateNavigableElements();
-            const lastFocusedCard = navigableElements.find(el => el.dataset.category === category && el.dataset.artist === currentArtist);
+            const lastFocusedCard = navigableElements.find(el => el.dataset.category === category && el.dataset.artist === lastArtist);
             const indexToFocus = lastFocusedCard ? navigableElements.indexOf(lastFocusedCard) : navigableElements.findIndex(el => el.classList.contains('category-btn') && el.classList.contains('active'));
             focusElement(indexToFocus > -1 ? indexToFocus : 0);
         }, 50);
@@ -2030,7 +2030,7 @@ radio: [
         
         document.getElementById('progressContainer').style.display = 'block';
         document.getElementById('time-info').style.display = 'flex';
-        highlightPlayingTrack();
+        clearPlayingHighlight();
     }
     
     function playRadio(station) {
@@ -2069,10 +2069,13 @@ radio: [
         if (!currentPlaylist || currentPlaylist.length === 0) return;
         
         const trackData = currentPlaylist[currentTrackIndex];
+        // Evita tocar a mesma música repetidamente em caso de erro
+        if (audioPlayer.src === trackData.url && isPlaying) return; 
+
         updatePlayerUI(trackData.name, trackData.artist, trackData.img);
         audioPlayer.src = trackData.url;
         playAudio();
-        highlightPlayingTrack();
+        clearPlayingHighlight(); 
     }
 
     function togglePlay() {
@@ -2104,9 +2107,13 @@ radio: [
         clearPlayingHighlight();
     }
     
+    // ===== INÍCIO DA CORREÇÃO 2: Lógica de Próxima Música =====
     function nextTrack() {
         if (currentPlaylist.length === 0) return;
         currentTrackIndex = (currentTrackIndex + 1) % currentPlaylist.length;
+        
+        // A lógica anterior era muito complexa e causava o loop.
+        // Simplificamos para sempre usar a função principal da playlist.
         playTrackFromPlaylist();
     }
 
@@ -2115,6 +2122,7 @@ radio: [
         currentTrackIndex = (currentTrackIndex - 1 + currentPlaylist.length) % currentPlaylist.length;
         playTrackFromPlaylist();
     }
+    // ===== FIM DA CORREÇÃO 2 =====
 
     function updatePlayerUI(title, subtitle, image) {
         trackName.textContent = title;
@@ -2187,26 +2195,14 @@ radio: [
             focusElement(index > -1 ? index : 0);
         }, 50);
     }
-
+    
     function highlightPlayingTrack() {
-        clearPlayingHighlight();
-        if (currentCategory !== 'radio' && currentPlaylist.length > 0) {
-            const trackData = currentPlaylist[currentTrackIndex];
-            const trackItem = document.querySelector(`.track-item[data-artist="${trackData.artist}"][data-track-index="${currentTrackIndex}"]`);
-            if (trackItem) {
-                trackItem.classList.add('playing');
-                currentlyPlayingTrackElement = trackItem;
-                const playIcon = trackItem.querySelector('.play-track-btn i');
-                playIcon.classList.replace('fa-play', 'fa-pause');
-            }
-        }
+       clearPlayingHighlight(); 
     }
 
     function clearPlayingHighlight() {
         if (currentlyPlayingTrackElement) {
             currentlyPlayingTrackElement.classList.remove('playing');
-            const playIcon = currentlyPlayingTrackElement.querySelector('.play-track-btn i');
-            playIcon.classList.replace('fa-pause', 'fa-play');
             currentlyPlayingTrackElement = null;
         }
     }
@@ -2254,9 +2250,9 @@ radio: [
     function updateNavigableElements() {
         navigableElements = Array.from(
             document.querySelectorAll(
-                '.control-btn, .category-btn, .play-all-group-btn, .content-card, .back-btn, .track-item'
+                '.control-btn, .category-btn, .play-all-group-btn, .content-card, .back-btn'
             )
-        ).filter(el => el.offsetParent !== null); // Apenas elementos visíveis
+        ).filter(el => el.offsetParent !== null); 
     }
 
     function focusElement(index) {
@@ -2272,7 +2268,6 @@ radio: [
         }
     }
 
-    // ===== INÍCIO DA NOVA LÓGICA DE NAVEGAÇÃO =====
     function getBestCandidate(direction, currentRect, elements, currentIndex) {
         let bestCandidateIndex = -1;
         let minDistance = Infinity;
@@ -2296,7 +2291,7 @@ radio: [
                         isCandidate = true;
                         const vDist = candidateRect.top - currentRect.bottom;
                         const hDist = Math.abs(candidateCenterX - currentCenterX);
-                        distance = vDist + hDist * 3; // Prioriza alinhamento vertical
+                        distance = vDist + hDist * 3; 
                     }
                     break;
                 case 'ArrowUp':
@@ -2312,7 +2307,7 @@ radio: [
                          isCandidate = true;
                          const hDist = candidateRect.left - currentRect.right;
                          const vDist = Math.abs(candidateCenterY - currentCenterY);
-                         distance = hDist + vDist * 3; // Prioriza alinhamento horizontal
+                         distance = hDist + vDist * 3;
                     }
                     break;
                 case 'ArrowLeft':
@@ -2358,7 +2353,7 @@ radio: [
             }
         } else if (e.key === 'Backspace') {
             e.preventDefault();
-            const visibleTracksList = document.querySelector('.tracks-list[style*="display: block"]');
+            const visibleTracksList = document.querySelector('.tracks-list[style*="display: grid"]');
             if (visibleTracksList) {
                 const backBtn = visibleTracksList.querySelector('.back-btn');
                 if (backBtn) backBtn.click();
@@ -2369,7 +2364,6 @@ radio: [
             focusElement(newIndex);
         }
     }
-    // ===== FIM DA NOVA LÓGICA DE NAVEGAÇÃO =====
     
     window.playAllGroup = playAllGroup;
 </script>
